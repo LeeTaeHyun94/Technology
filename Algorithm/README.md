@@ -77,8 +77,7 @@ E' 포함한 부분집합의 구간의 수는 같다는 말.
 # 4. Bitmasking
 
 # 5. Harmonic number
-Hn = $\frac{1}{1}$ + $\frac{1}{2}$ + $\frac{1}{3}$ + ... + $\frac{1}{n}$ = ln(n) + euler's constant  
-Hn >= $\intg{1}{n+1}{$\tfrac{dx}{x}$}$  
+Hn = 1/1 + 1/2 + 1/3 + ... + 1/3 = ln(n) + euler's constant  
 ```
 ln(n+1) <= Hn <= ln(n) + 1
 ```
