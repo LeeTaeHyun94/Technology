@@ -1,4 +1,4 @@
-# Spring Framework (with JSP & Servlet)
+# Spring Framework
 
 ## 1.1 AOP (Aspect Oriented Programming)
 
