@@ -40,4 +40,10 @@ Node.js
 
 ## 3.3 Regular Expression (정규 표현식)
 
+## 3.4 Debug
 
+> Chrome 개발자 도구 (F12) - Sources 탭을 통해 디버깅이 가능하다. (Go to next breakpoint, Step into, Step over)  
+	=> Watch Expressions : 변수를 입력하면 해당 변수에 대한 모니터링이 가능.  
+	=> Global : 전역 변수  
+	=> Scope Variables : 지역 변수  
+	=> 스크립트 코드 중단점 외에도 DOM, XHR, Event Listener 중단점도 있다.
