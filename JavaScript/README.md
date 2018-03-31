@@ -47,3 +47,9 @@ Node.js
 	=> Global : 전역 변수  
 	=> Scope Variables : 지역 변수  
 	=> 스크립트 코드 중단점 외에도 DOM, XHR, Event Listener 중단점도 있다.
+
+## 3.5 Function (함수)
+
+개념은 기존의 프로그래밍 언어들과 비슷하다. 재사용 가능하고, 코드의 가독성을 좋게 하고 유지 보수에 용이하다.
+* 자바스크립트의 독특한 표현법 : var numbering = function(){} <- 변수를 선언하여 안에 함수를 대입 가능.  
+				 (function(){})(); <- 익명함수
