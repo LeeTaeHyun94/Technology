@@ -63,7 +63,7 @@ arr.push(''); // 배열의 맨 끝에 데이터를 추가한다.
 arr.concat(array); // 다른 배열을 arr 배열의 끝에 이어 붙인다.
 arr.unshift(''); // 배열의 맨 앞에 데이터 추가.
 arr.splice(index, 삭제할 원소의 개수, 원소...); // 배열의 특정 순서의 인덱스부터 인자로 전달한 개수만큼
-						// 기존의 원소를 삭제하고 새로운 원소를 삽입한다. 삭제된 원소들을 반환.
+					       // 기존의 원소를 삭제하고 새로운 원소를 삽입한다. 삭제된 원소들을 반환.
 arr.shift(); // 배열의 맨 앞 요소를 삭제하고 반환.
 arr.pop(); // 배열의 맨 끝 요소를 삭제하고 반환.
 arr.sort(); // 정렬, 매개변수로 compare 함수를 넣고 정렬 가능. 없다면 기본 내림차순 정렬.
@@ -77,7 +77,8 @@ arr.reverse(); // 배열을 거꾸로 뒤집는다.
 ```
 var dic = {'apple' : 1, 'banana' : 2, 'cat' : 3}; // 객체(Dictionary)의 생성, Key : Value
 dic['apple'], dic.apple // value에 접근하는 두 가지 표현방식.
-for(key in dic) console.log("key : " + key + ", value : " + dic[key]); // for(var in Object) <=   for in 문을 통해 객체에 접근 가능.
+for(key in dic) console.log("key : " + key + ", value : " + dic[key]);
+// for(var in Object) <= for in 문을 통해 객체에 접근 가능.
 ```
 
 ### 3.7.2 객체 지향 프로그래밍
