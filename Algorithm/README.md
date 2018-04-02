@@ -211,6 +211,7 @@ bool areIntersect(Line l1, Line l2, Point &p) { // 참조를 사용한 전달
 		     미지수가 두 개인 선형 방정식 두 개로 이루어진 연립 방정식을 풀면 된다.
 
 * 선분은 양 끝점이 존재하며, 길이가 유한한 직선을 말한다.
+
 [Algorithm Design Process]
 ======================
 
