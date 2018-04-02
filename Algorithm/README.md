@@ -121,7 +121,96 @@ O(N) 공간복잡도를 이용, O(logN) 시간에 질의(Query)에 대한 답을 내는 것과 갱신(Up
 두 개의 독립집합으로 나눌 수 있는 그래프. (예를 들어 모든 정점을 빨강색과 파랑색으로 색칠한다면 모든 변이 빨강색과 파랑색 꼭지점을 포함하도록 색칠할 수 있는 그래프.)  
 $ BOJ-1707 이분 판정 문제. 2개의 독립집합으로 나타낼 수 있다면 이분그래프라고 할 수 있다.
 
+# 8. Geometry (기하, Computational Geometry : 계산 기하)
 
+일반적으로 알고리즘에서는 계산 기하 문제를 많이 다룬다.
+
+## 8.1 Point (0차원 도형 : 점)
+```
+struct Point_i {
+	int x, y;
+	Point_i() { x = y = 0; }
+	Point_i(int _x, int _y) : x(_x), y(_y) {}
+}; // 좌표가 정수 값으로 주어질 때
+
+struct Point {
+	double x, y;
+
+	Point() { x = y = 0.0; }
+
+	Point(double _x, double _y) : x(_x), y(_y) {}
+
+	bool operator < (Point p) const { // 연산자 재정의, EPS : 1e^-9와 같은 아주 작은 값 (문제에 따라 오차 범위 지정)
+		if (fabs(x - p.x) > EPS) return x < p.x; // fabs() : double 자료형의 절대값
+		return y < p.y;
+	}
+
+	bool operator == (Point p) const {
+		return fabs(x - p.x) < EPS && fabs(y - p.y) < EPS;
+	} // 두 점이 서로 같은지 비교
+}; // 좌표가 실수 값으로 주어질 때
+
+double hypot(double x, double y) { return sqrt(x * x + y * y); }
+// 피타고라스의 정리에 의하여 z = root(x^2 + y^2)
+double dist(Point p1, Point p2) { return hypot(p1.x - p2.x, p1.y - p2.y); }
+// Get Euclidean Distance
+
+Point rotate(Point p, double theta) {
+	double rad = theta * (PI / 180.0); // degree를 radian으로 변환!
+	// deg = rad * (180.0 / PI)
+	return Point(p.x * cos(rad) - p.y * sin(rad), p.x * sin(rad) + p.y * cos(rad));
+} // p를 원점(0, 0)을 중심으로 반시계 방향으로 theta도 회전한다.
+
+struct Line {
+	double a, b, c;
+
+	Line(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {}
+}; // 선형 방정식의 x, y의 계수와 상수로 직선을 표현
+// ax + by + c = 0
+
+Line pointsToLine(Point p1, Point p2) {
+	if (fabs(p1.x - p2.x) < EPS) return Line(1.0, 0.0, -p1.x);
+	else {
+		Line l;
+		l.a = -(double)(p1.y - p2.y) / (p1.x - p2.x);
+		l.b = 1.0; // b (y의 계수)를 1로 두어 나머지 값을 구한다. y = ax + b의 형태
+		l.c = -(double)(l.a * p1.x) - p1.y;
+		return l;
+	}
+}; // 기울기와 선형 방정식에 점의 대입을 통해 선형 방정식을 도출한다.
+
+bool areParallel(Line l1, Line l2) {
+	return fabs(l1.a - l2.a) < EPS && fabs(l1.b - l2.b) < EPS
+} // 계수 a와 b를 비교하여 기울기가 같은지를 확인 (평행임을 확인)
+
+bool areSame(Line l1, Line l2) {
+	return areParallel(l1, l2) && fabs(l1.c - l2.c) < EPS
+} // 평행하면서 상수항까지 같다면 일치
+
+bool areIntersect(Line l1, Line l2, Point &p) { // 참조를 사용한 전달
+	if (areParallel(l1, l2)) return false;
+	p.x = (l2.b * l1.c - l1.b * l2.c) / (l2.a * l1.b - l1.a * l2.b);
+	if (fabs(l1.b) > EPS) p.y = -(l1.a * p.x + l1.c);
+	else p.y = -(l2.a * p.x + l2.c);
+	return true;
+} // 교차점이 있는지 여부와 교차점의 좌표를 구하는 함수
+```
+
+* 극좌표계 : 평면 위의 위치를 각도와 거리를 써서 나타내는 2차원 좌표계, 두 점 사이의 관계가 각이나 거리로 쉽게 표현되는 경우에 가장 유용하다. 
+직교 좌표계에서는 삼각함수로 복잡하게 나타나는 관계가 극좌표계에서는 간단하게 표현되는 경우가 많다. 
+2차원 좌표계이기 때문에 극좌표는 반지름 성분과 각 성분의 두 성분으로 결정되며 주로 r로 나타내는 반지름 성분은 극(원점)에서의 거리를 나타낸다.
+주로 Θ로 나타내는 각 성분은 0°(직교 좌표계에서 x축의 양의 방향에 해당)에서 반시계 방향으로 잰 각의 크기를 나타낸다.
+
+* rotate에 대한 일반화 : 각도라는 개념이 없는 직교좌표계에서는 점 P(x, y)를 각 α만큼 회전시킨다고 하면 표현하기 어렵다.  
+			 하지만 극좌표계에서는 P(r, Θ) -> P`(r, Θ+α) 이처럼 쉽게 표현이 가능하다. 이렇게 표현한 극좌표를    
+			 삼각함수를 이용해 데카르트 좌표로 변환하면 P`(x`, y`) = P`(r * cos(Θ+α), r * sin(Θ+α))가 되고  
+			 삼각함수의 덧셈정리를 이용해 P`(r*cosΘcosα - r*sinΘsinα, r*sinΘcosα + r*cosΘsinα)가 된다.  
+			 위 식에서 r*cosΘ = P.x, r*sinΘ = P.y이므로 위의 rotate 함수처럼 일반화가 가능하다.
+
+* Intersect (교차) : 만약 두 직선이 평행하지 않다면(당연히 일치할 수도 없다.) 어느 한 점에서 교차한다. 따라서 그 교점을 구하려면  
+		     미지수가 두 개인 선형 방정식 두 개로 이루어진 연립 방정식을 풀면 된다.
+
+* 선분은 양 끝점이 존재하며, 길이가 유한한 직선을 말한다.
 [Algorithm Design Process]
 ======================
 
