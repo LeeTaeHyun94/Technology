@@ -228,6 +228,15 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 * Forword Edge : Spanning Tree에서 자식 노드로 내려가는 간선 
 ```
 
+# 10. Quick Sort
+
+임의의 pivot 값을 고르고 pivot을 기준으로 pivot의 좌측에는 pivot 보다 작은 값, 우측에는 큰 값을 놓는 행위를 재귀적으로 반복했을 때,  
+결국 정렬이 완성된다는 방법론.
+
+* Average-case Analysis : pivot 값에 따라 비교 횟수가 많을 수도 적을 수도 있다. 때문에 중앙에서 분할될 가능성이 높은  
+			  좌측 끝, 중앙, 우측 끝 세 값의 중위법을 이용하여 pivot을 정하고 분할하는 방법을 대부분 채택한다.  
+			  평균적인 시간 복잡도는 O(nlogn)이다.
+
 [Algorithm Design Process]
 ======================
 
