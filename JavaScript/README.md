@@ -94,3 +94,24 @@ grades.show();
 // 위 형태의 프로그래밍이 가능하다. Java에서 메소드를 정의했던 방식을 JavaScript에서는 변수에 함수를 정의하여
 // grades라는 객체는 함수도 사용 가능하고 멤버 변수 또한 사용 가능하다.
 ```
+
+## 3.8 Regular Expression (정규 표현식)
+
+문자열에서 특정한 문자를 찾아내는 도구.
+```
+var pattern = /a/ = new RegExp('a');
+pattern.exec('abcdef'); // return Object ["a", index : 0, input: "abcdef", groups: undefined]
+			// 필요한 정보를 추출
+'abcdef'.match(pattern);
+pattern.test('abcdef'); // return boolean
+			// 패턴의 유무
+'abcdef'.replace(pattern, 'A'); // 패턴을 찾고 전달한 문자열로 교체
+
+/(\w+)\s(\w+)/ // $1(하나 이상의 심볼) + 공백 + $2(하나 이상의 심볼)
+
+var urlPattern = /\b(?:https?):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*/gim;
+```
+### 3.8.1 옵션 (i, g)
+* i : 대소문자 구분없이 패턴 검색
+* g : 검색된 모든 결과를 반환
+
