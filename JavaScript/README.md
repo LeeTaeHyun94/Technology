@@ -229,7 +229,8 @@ var sortFunc = function(a, b) {
     return b - a;
 };
 console.log(numbers.sort(sortFunc));
-// 원래 sort 메소드는 배열의 숫자들을 문자열로 처리해서 사전 순으로 정렬해주지만 직접 정렬을 위한 함수를 작성하여 인자로 전달해주게 되면 숫자의 크기를 오름차순으로 정렬이 된다.
+// 원래 sort 메소드는 배열의 숫자들을 문자열로 처리해서 사전 순으로 정렬해주지만 직접 정렬을 위한 함수를 작성하여 인자로
+// 전달해주게 되면 숫자의 크기를 오름차순으로 정렬이 된다.
 ```
 
 * Ajax를 통한 비동기 처리에서 콜백이 유용하게 사용된다.
@@ -251,7 +252,8 @@ function outter() {
     inner();
 }
 outter();
-// 어떤 특정한 외부 함수 내부에서만 쓰고 싶은 함수를 외부 함수 안 쪽에 함수를 선언하게 된다. inner 함수에서 밖의 title 변수에 접근 가능하다.
+// 어떤 특정한 외부 함수 내부에서만 쓰고 싶은 함수를 외부 함수 안 쪽에 함수를 선언하게 된다.
+// inner 함수에서 밖의 title 변수에 접근 가능하다.
 
 function outter() {
     var title = 'coding everybody';
@@ -261,7 +263,8 @@ function outter() {
 }
 inner = outter();
 inner();
-// 외부 함수의 실행이 끝나서 외부 함수가 소멸된 이후에도 내부 함수는 외부 함수의 변수에 접근할 수 있다. 이러한 메커니즘을 Closure 라고 한다.
+// 외부 함수의 실행이 끝나서 외부 함수가 소멸된 이후에도 내부 함수는 외부 함수의 변수에 접근할 수 있다.
+// 이러한 메커니즘을 Closure 라고 한다.
 ```
 
 
@@ -286,7 +289,9 @@ console.log(matrix.get_title());
 ghost.set_title('공각기동대');
 console.log(ghost.get_title());
 console.log(matrix.get_title());
-// 이와 같은 방식으로 같은 함수를 통해 다른 객체를 만들 수 있다. 외부 함수의 지역 변수인 title이 서로 다른 같은 모양의 객체를 만들 수 있다는 것! title 같은 private variable을 프로그래밍 가능하다.
+// 이와 같은 방식으로 같은 함수를 통해 다른 객체를 만들 수 있다.
+// 외부 함수의 지역 변수인 title이 서로 다른 같은 모양의 객체를 만들 수 있다는 것!
+// title 같은 private variable을 프로그래밍 가능하다.
 ```
 
 
@@ -315,7 +320,9 @@ for(var i = 0; i < 5; i++){
 for(var index in arr) {
     console.log(arr[index]());
 }
-// 이렇게 배열의 값에 외부 함수의 지역 변수로 id를 선언하고 그 id를 반환하는 내부 함수를 반환하는 외부 함수를 구성하게 되면 배열의 각 인덱스에는 개별적으로 외부 함수의 private variable 값이 들어가게 되어 0, 1, 2, 3, 4가 저장할 수 있게 된다.
+// 이렇게 배열의 값에 외부 함수의 지역 변수로 id를 선언하고 그 id를 반환하는 내부 함수를 반환하는 외부 함수를 구성하게 되면
+// 배열의 각 인덱스에는 개별적으로 외부 함수의 private variable 값이 들어가게 되어
+// 0, 1, 2, 3, 4를 저장할 수 있게 된다.
 ```
 
 
@@ -332,7 +339,8 @@ function sum(){
     return _sum;
 }
 console.log('result : ' + sum(1,2,3,4));
-// 이처럼 sum 함수에 인자를 전달받는 부분이 없음에도 불구하고 1, 2, 3, 4를 인자로 전달할 수 있다. 이유는 모든 함수에는 arguments라는 특수한 배열이 있기 때문이다.
+// 이처럼 sum 함수에 인자를 전달받는 부분이 없음에도 불구하고 1, 2, 3, 4를 인자로 전달할 수 있다.
+// 이유는 모든 함수에는 arguments라는 특수한 배열이 있기 때문이다.
 
 function zero(){
     console.log(
@@ -449,7 +457,8 @@ var o = {
     } // 객체에 속하는 메소드의 this는 그 객체를 가리킨다.
 };
 
-// 생성자(함수) 안에 있는 this는 함수로 호출됐을 때는 전역 객체인 window를 가리키고 생성자로 사용됐을 때는 생성되는 객체를 가리키게 된다.
+// 생성자(함수) 안에 있는 this는 함수로 호출됐을 때는 전역 객체인 window를 가리키고
+// 생성자로 사용됐을 때는 생성되는 객체를 가리키게 된다.
 
 function sum1(x, y) { return x + y; }
 var sum2 = new Function('x', 'y', 'return x + y;'); // 객체로서 함수를 선언
@@ -492,7 +501,8 @@ function Programmer(name) {
     this.name = name;
 }
 Programmer.prototype = new Person();
-// prototype이라는 특수한 Property에 상속받을 객체를 생성하여 대입하면 Person 객체의 prototype property의 정보들을 갖고 객체를 생성하여 넘겨주는 방식
+// prototype이라는 특수한 Property에 상속받을 객체를 생성하여 대입하면 Person 객체의
+// prototype property의 정보들을 갖고 객체를 생성하여 넘겨주는 방식
 
 Programmer.prototype.coding = function () { return 'Hello, World!'; };
 // prototype property를 통해 새로운 property나 method들을 추가해줄 수 있다.
