@@ -386,9 +386,119 @@ console.log(sum.apply(o2)) // 185
 
 ## 3.13 Object Oriented Programming (객체 지향 프로그래밍)
 
-로직을 상태(State)와 행위(Behave)로 구성하여 이를 하나의 객체라는 단위로 프로그래밍하는 패러다임.
+로직을 상태(State)와 행위(Behave)로 구성하여 이를 하나의 객체(변수 + 메소드)라는 단위로 프로그래밍하는 패러다임.
 
 * 추상화
 * 부품화 : 소프트웨어를 객체 단위로 구성하여 어느 하나의 기능에 해당하는 객체를 구현, Javascript에서는 Object
 * 정보 은닉, 캡슐화 : 객체는 이러한 특성들을 갖는다.
 * 인터페이스 : 각각의 부품을 연결하기 위한 연결점. 이러한 연결점에는 항상 표준이 있다.
+* Javascript는 Prototype-based Programming
+
+
+
+## 3.14 객체 지향 - 생성자와 new
+
+```javascript
+var person = {}; // 비어 있는 객체 생성 (Literal Object)
+person.name = 'llstaaar';
+person.introduce = function() {
+    return 'My name is ' + this.name;
+};
+console.log(person.introduce());
+// 위 코드는 객체를 만드는 과정이 분산되어 있으므로 객체를 정의할 때 값도 저장하도록 하자.
+
+var person = {
+    'name' : 'llstaaar',
+    'introduce' : function() { return 'My name is ' + this.name; }
+};
+// 하지만 이 코드 또한 같은 특징을 가진 객체를 생성할 때 코드의 중복이 생기므로 좋은 코드는 아니다.
+```
+
+- Constructor (생성자) : 객체를 만드는 역할을 하는 함수, 변수를 선언하면서 new 키워드를 붙여주면 함수가 객체의 생성자로 사용되는 것을 알 수 있다.
+
+```javascript
+function Person(name) {
+    this.name = name;
+    this.introduce = function() {
+        return 'My name is ' + this.name;
+    };
+}
+var p1 = new Person('llstaaar');
+var p2 = new Person('llmooon');
+console.log(p1.introduce());
+console.log(p2.introduce());
+```
+
+
+
+## 3.15 객체 지향 - Global Object (전역 객체)
+
+모든 객체는 window라는 전역 객체의 프로퍼티이다. (Node.js에서는 global)
+
+
+
+## 3.16 객체 지향 - this
+
+* this : 함수 내에서의 함수 호출 맥락(Context), Javascript에서는 함수와 객체의 느슨한 관계를 연결시켜주는 역할을 하는 키워드, 함수를 어떻게 호출하느냐에 따라서 this가 가리키는 대상이 달라진다.
+
+```javascript
+this === window; // true, 평문에서의 this는 전역 객체인 window를 가리킨다.
+var o = {
+    func : function() {
+        if(o === this) console.log("o === this");
+    } // 객체에 속하는 메소드의 this는 그 객체를 가리킨다.
+};
+
+// 생성자(함수) 안에 있는 this는 함수로 호출됐을 때는 전역 객체인 window를 가리키고 생성자로 사용됐을 때는 생성되는 객체를 가리키게 된다.
+
+function sum1(x, y) { return x + y; }
+var sum2 = new Function('x', 'y', 'return x + y;'); // 객체로서 함수를 선언
+
+var o = {}
+var p = {}
+function func(){
+    switch(this){
+        case o:
+           	console.log('o');
+            break;
+        case p:
+            console.log('p');
+            break;
+        case window:
+            console.log('window');
+            break;          
+    }
+}
+func(); // 함수를 그냥 호출했을 때에는 this === window
+func.apply(o); // apply 메소드를 통해 o 객체를 인자로 전달하여 함수를 호출하면 this === o
+func.apply(p); // apply 메소드를 통해 p 객체를 인자로 전달하여 함수를 호출하면 this === p
+```
+
+
+
+## 3.17 객체 지향 - Inheritance (상속)
+
+상속을 통해 객체의 로직을 그대로 물려받는 또 다른 객체를 만들 수 있다.
+
+```javascript
+function Person(name) {
+    this.name = name;
+}
+Person.prototype.name = null;
+Person.prototype.introduce = function () { return 'My name is ' + this.name; };
+var p1 = new Person('llstaaar');
+console.log(p1.introduce());
+function Programmer(name) {
+    this.name = name;
+}
+Programmer.prototype = new Person();
+// prototype이라는 특수한 Property에 상속받을 객체를 생성하여 대입하면 Person 객체의 prototype property의 정보들을 갖고 객체를 생성하여 넘겨주는 방식
+
+Programmer.prototype.coding = function () { return 'Hello, World!'; };
+// prototype property를 통해 새로운 property나 method들을 추가해줄 수 있다.
+
+var p2 = new Programmer('llstaaar');
+console.log(p2.introduce());
+```
+
+* prototype : 
