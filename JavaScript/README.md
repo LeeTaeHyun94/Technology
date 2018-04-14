@@ -17,6 +17,8 @@ Node.js
 
 # 2. ClientSide Script
 
+주의해야 할 점은 ECMA Script 버전에 따라 웹 브라우저의 호환성을 고려해야 한다.
+
 
 
 ## 2.1 jQuery
@@ -511,4 +513,82 @@ var p2 = new Programmer('llstaaar');
 console.log(p2.introduce());
 ```
 
-* prototype : 
+* Prototype (원형) : 이 property는 어떤 용도가 약속되어 있는 특수한 property이기 때문에 prototype에 저장되어 있는 속성들은 생성자를 통해서 생성된 객체에 연결된다.
+* Prototype Chain : 이러한 prototype에 의한 상속이 얽혀있는 관계를 의미한다. property의 value를 찾는 과정은 자기 자신을 생성한 객체의 property -> prototype -> 부모의 property -> 부모의 prototype 값을 갖고 있는 property를 찾을 때까지 역순으로 찾아 나간다.
+
+
+
+## 3.18 객체 지향 - 표준 내장 객체의 확장
+
+* 표준 내장 객체 : Javascript가 기본적으로 갖고 있는 객체 (Object, Function, Array, String, Boolean, Number, Math, Date, RegExp)
+
+```javascript
+Array.prototype.rand = function() {
+    return this[Math.floor(this.length * Math.random())];
+};
+var arr = new Array('seoul', 'new york', 'ladarkh', 'pusan', 'Tsukuba');
+console.log(arr.rand());
+// 이러한 방식으로 표준 내장 객체의 prototype property를 통해
+// 원하는 property나 method를 확장시킬 수 있다.
+```
+
+
+
+## 3.19 객체 지향 - Object
+
+Object 객체는 객체의 가장 기본적인 형태를 가지고 있는 객체이다. 따라서 모든 객체들은 Object를 상속받고 Object 객체의 property와 method를 사용할 수 있다. prototype을 통해 상속되는 속성들은 새롭게 생성되는 모든 객체가 개별적으로 사용이 가능하지만 다른 속성들은 Java/C#의 static variable/method처럼 사용한다. method는 인자로 객체를 전달해주어서 사용하는 방식 (ex. Object.keys(arr)) 이다.
+
+* Object 객체 또한 표준 내장 객체이므로 prototype property에 원하는 property나 method를 추가하여 모든 객체들에게 필요한 기능들을 확장이 가능하다.
+* 그러나 표준 내장 객체의 확장은 해당 객체를 상속받는 모든 객체에 영향을 미치므로 신중히 설계하도록 하자.
+
+
+
+## 3.20 객체 지향 - Data Type
+
+* Primitive Type : 객체가 아닌 Data Type
+* (number, string, boolean, null, undefined + symbol (ECMA Script 2015))
+* 위와 같은 원시 데이터 타입에도 분명히 프로퍼티와 메소드가 있다. 그렇다면 객체처럼 사용된다는 말인데?
+* Wrapper Object : 내부적으로는 원시 데이터 타입인 데이터들을 객체와 관련된 작업들을 할 때 Javascript에서 임시로 데이터에 관한 객체를 만들어 주고 사용이 끝나면 제거한다. (null, undefined는 Wrapper Object가 존재하지 않는다.)
+
+
+
+## 3.21 객체 지향 - Reference (참조)
+
+* 복제 : variable의 value 만을 그대로 복사한다.
+
+```javascript
+var a = 1, b = a;
+console.log(a);
+b = 2;
+console.log(a);
+
+var a = {'id' : 1}, b = a;
+console.log(a.id);
+b.id = 2;
+console.log(a.id);
+// 위 두 코드의 코딩 방식은 비슷했다. 하지만 결과 값은 비슷하지 않은 것을 알 수 있었다.
+// 코드에 대해 정확히 설명하면
+// 변수에 저장된 데이터가 Primitive Type이라면 실제 value가 저장되어 있지만
+// 객체의 데이터가 저장되어 있다면 실제로는 객체의 value에 대해 참조가 되어 있다는 것을 알 수 있다.
+
+var a = {'id' : 1}, b = a;
+console.log(a.id);
+b = {'id' : 2}; // 왜냐면 Literal Object로 새로운 객체를 할당했기 때문.
+console.log(a.id);
+// 그러나 이렇게 코딩해도 a의 데이터가 변하진 않는다.
+
+var a = {'id' : 1};
+function func(b) {
+    b = {'id' : 2}; // 이 코드도 위와 마찬가지로 b에는 새로운 객체가 참조되었다.
+}
+func(a);
+console.log(a.id);
+
+var a = {'id' : 1};
+function func(b) {
+    b.id = a; // 하지만 이 코드는 b가 a를 참조하고 있으므로 출력되는 값이 바뀐다.
+}
+func(a);
+console.log(a.id);
+```
+
