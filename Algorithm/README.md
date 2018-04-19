@@ -324,6 +324,7 @@ Point translate(Point p, Vec v) {
 
 
 
+
 # 9. Cut Vertex, Cut Edge (in Undirected Graph)
 
 연결 요소가 두 개에서 하나가 되는 정점 혹은 간선. O(V * (V + E)) => O(V + E)  
@@ -336,17 +337,33 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 * Forword Edge : Spanning Tree에서 자식 노드로 내려가는 간선 
 ```
 
+
+
 # 10. Quick Sort
 
 임의의 pivot 값을 고르고 pivot을 기준으로 pivot의 좌측에는 pivot 보다 작은 값, 우측에는 큰 값을 놓는 행위를 재귀적으로 반복했을 때,  
 결국 정렬이 완성된다는 방법론.
 
 * Average-case Analysis : pivot 값에 따라 비교 횟수가 많을 수도 적을 수도 있다. 때문에 중앙에서 분할될 가능성이 높은  
-			  좌측 끝, 중앙, 우측 끝 세 값의 중위법을 이용하여 pivot을 정하고 분할하는 방법을 대부분 채택한다.  
-			  평균적인 시간 복잡도는 O(nlogn)이다.
+  		  좌측 끝, 중앙, 우측 끝 세 값의 중위법을 이용하여 pivot을 정하고 분할하는 방법을 대부분 채택한다.  
+  		  평균적인 시간 복잡도는 O(nlogn)이다.
+
+
+
+# 11. Closest Pair
+
+2차원 평면 위에 n개의 점이 존재할 때, 가장 거리가 가까운 점 한 쌍을 구하는 문제.
+
+모든 경우를 탐색하게 되면 O(n^2)의 시간복잡도가 나온다. 시간을 더 줄일 수 있는가?
+
+* 줄일 수 있다. 
+
+
 
 [Algorithm Design Process]
 ======================
+
+
 
 # Combinatorial Objects (조합 객체)
 
