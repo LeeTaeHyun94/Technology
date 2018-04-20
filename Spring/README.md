@@ -70,7 +70,21 @@ REST 방식이 데이터를 호출하고 사용하는 방식을 의미한다면 
 * DB의 정규화와 트랜잭션은 서로 연관이 깊다. (정규화가 잘 돼 있을수록 연관 있는 데이터가 줄어들어 트랜잭션의 처리 또한 줄어든다.)
 * Atomicity (원자성 - 트랜잭션은 하나의 단위로 처리), Consistency (일관성), Isolation (격리), Durability (영속성)
 
+
+
 ### 5.1 @Transactional
 
-* Method > Class > Interface 순으로 트랜잭션 어노테이션 설정이 우선시된다.
+* Method > Class > Interface 순으로 트랜잭션 어노테이션 설정이 우선시 된다.
 
+
+
+
+# 6. root-context & servlet-context
+
+1. root-context (Root Application Context) : 전체 계층 구조에서 최상단에 위치한 context
+   - 서로 다른 servlet context에서 공유해야 하는 Bean들을 정의. (ex. DataBase, Logging Setting etc..)
+   - servlet context에 동일한 내용의 bean이 생기면 servlet context의 bean이 우선 적용된다.
+   - 하나의 context에 정의된 AOP 설정은 다른 context에 영향을 미치지 않는다.
+2.  servlet-context : 서블릿에서만 이용되는 context
+   - 다른 servlet과 공유하기 위한 beans는 root-context에 정의하고 사용해야 한다.
+   - DispatcherServlet은 자신만의 context를 생성, 초기화하고 root-context를 찾아서 parent context로 사용한다.
