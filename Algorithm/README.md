@@ -368,6 +368,28 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 - 동치 (Equivalence Relation)
 - 분할 (Decomposition Partition)
 
+## 12.1 깊이 우선 탐색 (DFS : Depth First Search)
+
+기존의 DFS와는 다르게 visit 배열을 조금 더 세분화하여 color 배열로써 표현하고, 탐색을 시작한 시간을 기록할 수 있다면,
+
+Color
+
+- white : 방문하지 않은 정점
+- gray : 어느 한 정점(Root)으로부터 DFS를 시작하여 방문한 정점들
+- black : DFS가 끝난 정점
+
+Discover Time : 탐색을 시작한 시간
+
+이렇게 표현이 되는데, 이를 통해 구성된 신장 트리(Spanning Tree)에서 간선을 분류해낼 수 있다.
+
+- Tree Edge : 순 방향으로 이어지는 간선, 방문 가능한 정점으로 이어진다. (color = white)
+- Back Edge : 역 방향으로 이어지는 간선, 이미 방문한 정점으로 이어지는 간선이다. (color = gray)
+- Forward Edge : 현재 정점을 Root라고 했을 때, 자손 노드 중 하나로 이어지는 간선
+  - (color = gray && DiscoverTime[u] < DiscoverTime[v])
+- Cross Edge : 이미 방문한 정점으로 이어지면서 먼저 탐색을 시작한 정점으로 이어지는 간선
+  - 신장 트리에서 Root를 기준으로 다른 서브 트리를 갖는 정점으로 이어지는 간선이다.
+  - (color = gray && DiscoverTime[u] > DiscoverTime[v])
+
 
 
 
