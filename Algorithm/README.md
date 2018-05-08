@@ -356,7 +356,7 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 
 모든 경우를 탐색하게 되면 O(n^2)의 시간복잡도가 나온다. 시간을 더 줄일 수 있는가? 
 
-* 줄일 수 있다. 
+* 줄일 수 있다.  분할 정복 형태의 풀이가 가능하다.
 
 
 
@@ -370,25 +370,55 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 
 ## 12.1 깊이 우선 탐색 (DFS : Depth First Search)
 
-기존의 DFS와는 다르게 visit 배열을 조금 더 세분화하여 color 배열로써 표현하고, 탐색을 시작한 시간을 기록할 수 있다면,
+기존의 DFS와는 다르게 visit 배열을 조금 더 세분화하여 color 배열로써 표현하고, 탐색을 시작한 시간과 끝나는 시간을 기록할 수 있다면,
 
-Color
-
-- white : 방문하지 않은 정점
-- gray : 어느 한 정점(Root)으로부터 DFS를 시작하여 방문한 정점들
-- black : DFS가 끝난 정점
-
-Discover Time : 탐색을 시작한 시간
+- Color
+  - white : 방문하지 않은 정점
+  - gray : 어느 한 정점(Root)으로부터 DFS를 시작하여 방문한 정점들
+  - black : DFS가 끝난 정점 (현재 다른 간선을 통해서 더 이상 방문할 정점이 없는 정점)
+- Discover Time : DFS 탐색을 시작한 시간, Finish Time : DFS 탐색이 끝나는 시간
 
 이렇게 표현이 되는데, 이를 통해 구성된 신장 트리(Spanning Tree)에서 간선을 분류해낼 수 있다.
 
-- Tree Edge : 순 방향으로 이어지는 간선, 방문 가능한 정점으로 이어진다. (color = white)
-- Back Edge : 역 방향으로 이어지는 간선, 이미 방문한 정점으로 이어지는 간선이다. (color = gray)
+- Tree Edge : 순 방향으로 이어지는 간선, 방문 가능한 정점으로 이어진다. (color == white)
+- Back Edge : 역 방향으로 이어지는 간선, 이미 방문한 정점으로 이어지는 간선이다. (color == gray)
 - Forward Edge : 현재 정점을 Root라고 했을 때, 자손 노드 중 하나로 이어지는 간선
-  - (color = gray && DiscoverTime[u] < DiscoverTime[v])
-- Cross Edge : 이미 방문한 정점으로 이어지면서 먼저 탐색을 시작한 정점으로 이어지는 간선
+  - (color == gray && DiscoverTime[u] < DiscoverTime[v])
+- Cross Edge : 이미 방문한 정점이면서 먼저 탐색을 시작한 정점으로 이어지는 간선
   - 신장 트리에서 Root를 기준으로 다른 서브 트리를 갖는 정점으로 이어지는 간선이다.
-  - (color = gray && DiscoverTime[u] > DiscoverTime[v])
+  - (color == gray && DiscoverTime[u] > DiscoverTime[v])
+
+위와 같은 특성들을 이용한다면 조건에 따라 그래프의 특정 요소들을 찾을 수 있다.
+
+- ex : Find Back Edge - Cycle
+
+
+
+## 12.2 위상 정렬 (Topological Sort)
+
+일련의 정점들을 일자로 나열하는 것 (ex : 작업의 순서도, 수강 신청의 선수 과목 구조 등등)
+
+방향이 있고 사이클이 없는 그래프(DAG : Directed Acyclic Graph)에서 가능하다.
+
+사이클의 유무를 모르는 유향 그래프에서 위상 정렬을 수행해도 사이클의 유무를 알 수 있다. (사이클을 찾아내면 당연히 위상 정렬은 되지 않는다.)
+
+1. 내향차수(Indegree)가 0인 정점을 찾는다.
+2. 찾은 정점과 정점의 외향 간선을 제거한다.
+3. 정점이 남아있다면 1 - 2 과정을 반복한다.
+
+이것이 기존의 방법이라면 위에서 언급한 DFS를 이용한다면 DFS 한 번에 위상 정렬이 가능하다.
+
+DFS를 진행하며 Finish Time이 늦는 순서대로 출력한다. (먼저 탐색이 끝나는 대로 쌓아 두었다가 역순으로 출력한다.) => Topological Ordering
+
+이 방식은 DFS가 가장 빨리 끝나는 정점이 외향 차수(Outdegree)가 0이고 방향 또한 가장 깊은 곳이기 때문에 그만큼 거쳐온 정점도 많다는 DFS의 특징을 이용한 방식이다.
+
+
+
+## 12.3 강 연결 요소 (SCC : Strongly Connected Component)
+
+어느 한 정점에서 다른 모든 정점으로 갈 수 있는 방법이 존재하는 정점들의 집합을 말한다.
+
+DFS를 통해 DFS Spanning Tree를 구성하고 상호 연결되어 있지 않은 Sub Tree들을 찾는 것이 핵심.
 
 
 
@@ -450,6 +480,18 @@ k를 극한까지 보내면 공비 r = 3/4 < 1인 등비수열의 합 공식에 따라
   - 이러한 예시가 분할 정복 형태의 정렬 알고리즘의 시간복잡도의 상계이다.
 
 [출처] Special thanks to https://s2kindboys2.blog.me
+
+
+
+# 14. 서로소 집합 (Disjoint Set, Union-find)
+
+공통된 원소가 없는 (상호 배타적인) 부분 집합들로 나눠진 원소들에 대한 정보를 저장하는 자료 구조
+
+
+
+# 15. 최소 신장 트리 (MST : Minimum cost Spanning Tree)
+
+
 
 
 
