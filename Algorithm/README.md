@@ -278,6 +278,45 @@ Point translate(Point p, Vec v) {
 } // 점을 벡터에 따라 평행이동
 ```
 
+cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
+
+- Scalar : 크기(Magnitude)만을 갖는 물리량 (움직임으로 따지면 속력(단위 시간 당 이동한 거리))
+- Vector : 크기와 방향을 동시에 갖는 물리량 (움직임으로 따지면 속도(단위 시간 당 이동한 변위))
+  - 시작점에서 끝 점에 이르는 길이(크기)와 방향을 나타내는 벡터량, 힘
+  - 노름(norm) : 벡터의 크기를 나타내는 절대값, 스칼라와 똑같이 표현되어 구별하기 위해 노름이라고 한다.
+- 벡터의 곱
+  - 내적 (Dot Product, Inner Product, 스칼라 곱 : Scalar Product) : 연산 결과가 스칼라로 나온다.
+    - 평면 벡터의 내적
+      - ![수식17](./img/수식17.png)
+    - 공간 벡터의 내적
+      - ![수식18](./img/수식18.png)
+      - 이는 코사인 제 2 법칙으로 증명 가능하다.
+        - ![삼각형](./img/2.png)
+  - 외적 (Cross Product, Outer Product, Vector Product) : 오른손(나사)의 법칙을 기준으로 정의하겠다.
+    - A X B = AB sin a (a = 벡터 A와 B의 사잇각) : 벡터 B가 벡터 A를 기준으로 얼마나 회전하려는 성질을 가지는가. 벡터 A와 벡터 B의 수직 벡터가 결과값
+    - ![외적](./img/3.png)
+    - ![수식19](./img/수식19.png) <= 비호환(non-commutative) 연산
+    - 단위 벡터(Unit Vector) i, j, k 사이의 외적을 생각해보자. (단위 벡터들의 크기는 모두 1)
+      - 자기 자신과의 외적은 사잇각이 0도이므로(sin0 = 0) 당연히 0이다.
+      - 단위 벡터 i, j의 외적은 사잇각이 90도이므로(sin90 = 1) 1이다.
+        - ![sin](./img/sin.png) ![오른손](./img/오른손.png)
+      - 오른손 법칙을 기준으로 했기 때문에 i X j = k, j X i = -k
+      - ![수식20](./img/수식20.png)
+      - 이는 행렬식으로도 표현 가능하다.
+        - ![수식21](./img/수식21.png)
+        - 때문에 두 벡터의 외적을 구한다는 것은 행렬식의 사루스 전개 혹은 소행렬식을 구하는 것과 같다.
+        - ![사선 정리](./img/5.png)
+        - ![사루스](./img/6.png)
+    - 벡터의 외적은 두 벡터로 구성된 평행사변형의 넓이라고도 할 수 있다.
+      - 때문에 두 벡터를 구성할 수 있는 세 점을 통해 삼각형의 넓이 또한 구할 수 있다.
+        - (외적) / 2
+    - 두 벡터의 외적은 두 벡터의 사잇각이 180도보다 클 때는 음수가 된다.
+      - 180도 일때는 일직선 상에 놓여있다, 180도보다 작을 때는 양수가 된다.
+
+[출처] Special thanks to https://s2kindboys2.blog.me
+
+
+
 * 점 p와 직선 l (점 a, b에 의해 결정) 사이의 최소 거리를 구하는 알고리즘
 
   - 점 p와 가장 가까운 직선 l 위의 점 c를 구한다.
@@ -319,6 +358,45 @@ Point translate(Point p, Vec v) {
         }
         c = translate(a, scale(ab, u));
         return dist(p, c);
+    }
+    ```
+
+* 세 점 a, o, b가 주어졌을 때, 내적을 이용하여 각 aob의 크기를 구할 수 있다.
+
+  * ![수식22](./img/수식22.png)
+
+  * ```c++
+    double angle(Point a, Point o, Point b) {
+        Vec oa = pointToVec(o, a), ob = pointToVec(o, b);
+        return acos(dotProduct(oa, ob) / sqrt(norm_sq(oa) * norm_sq(ob)));
+    }
+    ```
+
+* 두 점 p와 q에 의해 결정되는 직선이 주어졌을 때, 어떤 점 r이 그 직선에 대해 어느 위치에 있는지를 구할 수 있다.
+
+  * 점 r은 직선 pq를 기준으로 왼쪽에 있을 수도, 오른쪽에 있을 수도, 직선 상에 위치할 수도 있다.
+
+  * 이를 벡터의 외적을 이용하면 점의 위치를 판별할 수 있다는 것이 CCW 알고리즘
+
+  * 반시계방향 검사(알고리즘) (CCW : Counter Clock Wise, Clock Wise Algorithm) / 좌회전 검사
+
+  * 세 점으로 부터 두 벡터 pq와 pr을 얻었다고 할 때, 두 벡터의 외적 pq X pr은 또 다른 벡터를 나타내는데, 그 벡터는 벡터 pq와 pr에 직교한다. 이 벡터의 크기는 위에서도 언급했듯이 두 벡터로 구성되는 평행사변형의 면적과 동일하다.
+
+  * 외적의 결과가 음수인지, 0인지, 양수인지에 의해 좌, 우측, 일직선인 경우를 판별한다.
+
+  * 정확히는 sinΘ에 의해 양수인 영역(0 < Θ < 180), 음수인 영역(180 < Θ < 360), 0인 경우(0, 180)를 판별하는 것이다.
+
+  * ![CCW](./img/4.png)
+
+  * ```c++
+    double crossProduct(Vec a, Vec b) {
+        return a.x * b.y - a.y + b.x;
+    }
+    int ccw(Point p, Point q, Point r) {
+        double cp = crossProduct(pointToVec(p, q), pointToVec(p, r));
+        if (cp < EPS) return -1;
+        else if (cp > EPS) return 1;
+        else return 0;
     }
     ```
 
