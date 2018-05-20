@@ -386,7 +386,7 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
 
   * 정확히는 sinΘ에 의해 양수인 영역(0 < Θ < 180), 음수인 영역(180 < Θ < 360), 0인 경우(0, 180)를 판별하는 것이다.
 
-  * ![CCW](./img/4.png)
+  * ![CCW](./img/4.PNG)
 
   * ```c++
     double crossProduct(Vec a, Vec b) {
