@@ -403,7 +403,7 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
 
 
 
-# 9. Cut Vertex, Cut Edge (in Undirected Graph)
+# 9. Articulation/Cut Vertex, Articulation/Cut Edge (in Undirected Graph)
 
 연결 요소가 두 개에서 하나가 되는 정점 혹은 간선. O(V * (V + E)) => O(V + E)  
 Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노드가 2개 이상이면 Cut Vertex가 될 수 있다.
