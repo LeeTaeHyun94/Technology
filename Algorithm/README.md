@@ -421,8 +421,7 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 
 - 단절점이 없는 그래프를 Biconnected Graph(Sub Graph, Component)라고 한다.
 - 단절선은 정점이 단 두 개뿐인 이중 연결 요소라고 할 수 있다.
-
-
+- 단절점/선을 일반화한 것이 연결로(Connectivity) / 간선 연결로(Edge Connectivity)
 
 # 10. Quick Sort
 
