@@ -405,8 +405,12 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
 
 # 9. Articulation/Cut Vertex, Articulation/Cut Edge (in Undirected Graph)
 
-연결 요소가 두 개에서 하나가 되는 정점 혹은 간선. O(V * (V + E)) => O(V + E)  
+해당 정점 혹은 간선을 연결했을 때, 연결 요소가 두 개에서 하나가 되는 정점 혹은 간선. O(V * (V + E)) => O(V + E)  
+
+반대로 없앴을 때(단절), 하나의 연결 요소가 두 개로 되는 정점 혹은 간선.
+
 Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노드가 2개 이상이면 Cut Vertex가 될 수 있다.
+
 ```
 * Back Edge : Spanning Tree에서 조상 노드로 올라가는 간선
 
@@ -414,6 +418,9 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 
 * Forword Edge : Spanning Tree에서 자식 노드로 내려가는 간선 
 ```
+
+- 단절점이 없는 그래프를 Biconnected Graph(Sub Graph, Component)라고 한다.
+- 단절선은 정점이 단 두 개뿐인 이중 연결 요소라고 할 수 있다.
 
 
 
@@ -520,6 +527,10 @@ DFS를 통해 DFS Spanning Tree를 구성하고 상호 연결되어 있지 않은 Sub Tree들을 찾�
   - 주어진 입력에 따라 정방향 그래프와 역방향 그래프 두 가지를 구성한 뒤,
   - 정방향으로 모든 정점에 대해 DFS를 진행하며 탐색이 끝나는 순서대로 스택에 push한 뒤,
   - 스택이 빌 때까지 정점들을 pop하면서 역방향으로 DFS를 진행하여 pop된 정점을 기준으로 한 번의 dfs에 하나의 강 연결 요소를 구할 수 있다.
+
+## 12.4 이중 연결 요소 (Biconnected Component)
+
+DFS를 하며 단절점을 찾는 알고리즘에 탐색하는 간선들을 스택에 저장했다가 리턴하여 되돌아 올 때, 단절점까지 pop연산을 하면 하나의 Biconnected Component를 구할 수 있다.
 
 
 
