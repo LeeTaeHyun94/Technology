@@ -525,7 +525,30 @@ DB에 저장되어 있는 모든 데이터 개체들에 대한 정보를 유지,
   - CONSTRAINT : 제약 조건의 이름을 지정, 이름을 지정할 필요가 없으면 CHECK 절만 사용하여 속성 값에 대한 제약 조건을 명시
   - CHECK : 속성 값에 대한 제약 조건을 지정
 
-예제 수기
+예제) 이름, 학번, 전공, 성별, 생년월일로 구성된 학생 테이블 정의
+
+- 이름은 NULL이 올 수 없고, 학번은 기본키다.
+- 전공은 학과 테이블의 학과코드를 참조하는 외래키로 사용
+- 학과 테이블에서 삭제가 일어나면 관련된 튜플들의 전공 값을 NULL로 만든다.
+- 학과 테이블에서 학과코드가 변경되면 전공 값도 같은 값으로 변경한다.
+- 생년월일은 1980-01-01 이후의 데이터만 저장할 수 있다.
+- 제약 조건의 이름은 '생년월일제약'으로 한다.
+- 각 속성의 데이터 형은 적당하게 지정한다. 단 성별은 도메인 'SEX'를 사용한다.
+
+```sql
+CREATE TABLE 학생
+	(이름 VARCHAR(15) NOT NULL,
+     학번 CHAR(8) PRIMARY KEY,
+     전공 CHAR(5),
+     성별 SEX,
+     생년월일 DATE,
+     FOREIGN KEY(전공) REFERENCES 학과(학과코드)
+     	ON DELETE SET NULL
+     	ON UPDATE CASCADE,
+     CONSTRAINT 생년월일제약 CHECK(생년월일 >= '1980-01-01'));
+```
+
+
 
 ## 5. CREATE VIEW
 
@@ -536,7 +559,16 @@ DB에 저장되어 있는 모든 데이터 개체들에 대한 정보를 유지,
   - 서브 쿼리인 SELECT 문에는 UNION이나 ORDER BY 절을 사용할 수 없다.
   - 속성 명을 기술하지 않으면 SELECT 문의 속성 명이 자동으로 사용된다.
 
-예제 수기
+예제) 고객 테이블에서 주소가 '안산시'인 고객들의 성명과 전화번호를 '안산고객'이라는 뷰로 정의
+
+```sql
+CREATE VIEW 안산고객(성명, 전화번호)
+AS SELECT 성명, 전화번호
+FROM 고객
+WHERE 주소='안산시';
+```
+
+
 
 ## 6. CREATE INDEX
 
@@ -552,7 +584,14 @@ DB에 저장되어 있는 모든 데이터 개체들에 대한 정보를 유지,
     - 생략된 경우 : ASC
   - CLUSTER : 지정된 키에 따라 튜플들을 그룹으로 지정하기 위해 사용
 
-예제 수기
+예제) 고객 테이블에서 UNIQUE한 특성을 갖는 고객번호 속성에 대해 내림차순으로 정렬하여 '고객번호_idx'라는 이름으로 인덱스를 정의
+
+```sql
+CREATE UNIQUE INDEX 고객번호_idx
+	ON 고객(고객번호 DESC);
+```
+
+
 
 ## 7. CREATE TRIGGER
 
@@ -575,7 +614,19 @@ DB에 저장되어 있는 모든 데이터 개체들에 대한 정보를 유지,
     - BEGIN으로 시작해서 END로 끝나는데, 적어도 하나 이상의 SQL 문이 있어야 한다. 없으면 오류 발생 
     - 변수에 값을 치환할 때는 예약어 SET을 사용
 
-예제 수기
+예제) 학생 테이블에 새로운 레코드가 삽입될 때, 삽입되는 레코드에 학년 정보가 누락됐으면 학년 필드에 "신입생"을 치환하는 트리거를 '학년정보_tri'라는 이름으로 정의하시오.
+
+```sql
+CREATE TRIGGER 학년정보_tri BEFORE INSERT ON 학생
+REFERENCING NEW TABLE AS new_table
+FOR EACH ROW
+WHEN new_table.학년=''
+BEGIN
+	SET new_table.학년="신입생";
+END;
+```
+
+
 
 ## 8. ALTER TABLE
 
@@ -650,31 +701,142 @@ SELECT PREDICATE 테이블명.속성명 AS 별칭 ... FROM 테이블명 ... WHER
 
 ## 2. 기본 검색
 
-예제 수기
+예제 1) 사원 테이블의 모든 튜플을 검색
+
+```sql
+SELECT * FROM 사원;
+```
+
+예제 2) 사원 테이블에서 부서만 검색하되, 같은 부서는 한 번만 검색
+
+```SQL
+SELECT DISTINCT 부서 FROM 사원;
+```
+
+예제 3) 사원 테이블에서 이름에 문자열 "월급은", 기본급에 10을 더한 값을 검색 (단, '이름' 속성에 있을지 모르는 좌우 공백을 모두 제거하시오)
+
+```sql
+SELECT Trim(이름)+"월급은" AS 이름, 기본급+10 AS 기본급 FROM 사원;
+```
+
+
 
 ## 3. 조건 지정 검색
 
-예제 수기
+예제 1) 사원 테이블에서 부서가 '기획'인 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 부서='기획';
+```
+
+예제 2) 사원 테이블에서 부서는 '기획'이고, 기본급이 110보다 큰 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 부서='기획' AND 기본급>110;
+```
+
+예제 3) 사원 테이블에서 부서가 '기획'이거나 '인터넷'인 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 부서='기획' OR 부서='인터넷';
+SELECT * FROM 사원 WHERE 부서 IN ('기획', '인터넷');
+```
+
+예제 4) 사원 테이블에서 이름의 첫 번째 글자가 '김'인 모든 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 이름 LIKE '김%';
+```
+
+예제 5) 사원 테이블에서 기본급이 85에서 95 사이인 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 기본급 BETWEEN 85 AND 95;
+SELECT * FROM 사원 WHERE 기본급>=85 AND 기본급<=95;
+```
+
+예제 6) 사원 테이블에서 주소가 NULL인 튜플을 검색
+
+```sql
+SELECT * FROM 사원 WHERE 주소 IS NULL;
+```
+
+
 
 ## 4. 정렬
 
-예제 수기
+예제 1) 사원 테이블에서 부서가 '기획'인 튜플을 검색하되, 이름을 기준으로 오름차순 정렬
+
+```sql
+SELECT * FROM 사원 WHERE 부서='기획' ORDER BY 이름;
+```
+
+예제 2) 사원 테이블의 모든 튜플들을 검색하되, 부서를 기준으로 오름차순 정렬하고 같은 부서에 대해서는 이름을 기준으로 내림차순 정렬
+
+```sql
+SELECT * FROM 사원 ORDER BY 부서 ASC, 이름 DESC;
+```
+
+
 
 ## 5. 그룹 검색
 
-예제 수기
+예제 1) 사원 테이블에서 부서 별로 기본급의 평균을 구하여 부서를 기준으로 오름차순 정렬
+
+```sql
+SELECT AVG(기본급) AS 평균 FROM 사원 GROUP BY 부서 ORDER BY 부서;
+```
+
+예제 2) 사원 테이블에서 기본급이 100 이상인 사원이 2명 이상인 부서의 부서 명과 사원 수를 검색
+
+```sql
+SELECT 부서, COUNT(*) AS 사원수 FROM 사원 WHERE 기본급>=100 GROUP BY 부서 HAVING COUNT(*)>=2;
+```
+
+
 
 ## 6. 하위 질의
 
-예제 수기
+예제 1) 여가활동 테이블에서 취미가 '나이트댄스'인 사원에 대해 사원 테이블에서 해당 사원의 이름과 주소를 검색
+
+```sql
+SELECT 이름, 주소
+FROM 사원
+WHERE 이름 IN (SELECT 이름 FROM 여가활동 WHERE 취미='나이트댄스');
+```
+
+예제 2) 여가활동을 하지 않는 사원들을 검색
+
+```sql
+SELECT *
+FROM 사원
+WHERE 이름 NOT IN (SELECT 이름 FROM 여가활동);
+```
+
+
 
 ## 7. 복수 테이블 검색
 
-예제 수기
+예제) (여가활동)경력이 10년 이상인 사원의 이름, 부서, 취미, 경력을 검색 (사원, 여가활동)
+
+```sql
+SELECT 사원.이름, 사원.부서, 여가활동.취미, 여가활동.경력
+FROM 사원, 여가활동
+WHERE 여가활동.경력>=10; AND 사원.이름=여가활동.이름;
+```
+
+
 
 ## 8. 통합 질의
 
-예제 수기
+예제) 사원들의 명단이 임원 테이블과 직원 테이블에 저장되어 있을 때, 두 테이블을 통합
+
+```sql
+SELECT * FROM 임원
+UNION SELECT * FROM 직원; 
+```
+
+
 
 # SQL - JOIN
 
@@ -690,20 +852,46 @@ INNER JOIN은 일반적으로 EQUI JOIN, NON-EQUI JOIN으로 구분된다.
 
 - EQUI JOIN
   - JOIN 대상 테이블에서 공통 속성을 기준으로 '=' 비교에 의해 같은 값을 가지는 행을 연결하여 결과를 생성하는 JOIN 방법
+
   - NATULAL JOIN : EQUI JOIN에서 JOIN 조건이 '=' 일 때 동일한 속성이 두 번 나타나게 되는데, 이 중 중복된 속성을 제거하여 같은 속성을 한 번만 표기하는 방법
+
   - JOIN 속성 : EQUI JOIN에서 연결 고리가 되는 공통 속성
+
   - SELECT 테이블명1.속성명, 테이블명2.속성명 ... FROM 테이블명1, 테이블명2 ... WHERE 테이블명1.속성명 = 테이블명2. 속성명;
     - 생략 가능 : SELECT 절 테이블 명
+
   - SELECT 테이블명1.속성명, 테이블명2.속성명 ... FROM 테이블명1 NATURAL JOIN 테이블명2;
     - 생략 가능 : SELECT 절 테이블 명
+
   - SELECT 테이블명1.속성명, 테이블명2.속성명 ... FROM 테이블명1 JOIN 테이블명2 USING(속성명);
     - 생략 가능 : SELECT 절 테이블 명
-  - 예제 수기
+
+  - 예제)  학생 테이블과 학과 테이블에서 학과코드 값이 같은 튜플을 JOIN하여 학번, 이름, 학과코드, 학과명을 출력
+
+    - ```sql
+      SELECT 학번, 이름, 학생, 학과코드, 학과명
+      FROM 학생, 학과
+      WHERE 학생.학과코드=학과.학과코드;
+      
+      SELECT 학번, 이름, 학생, 학과코드, 학과명
+      FROM 학생 NATURAL JOIN 학과;
+      
+      SELECT 학번, 이름, 학생, 학과코드, 학과명
+      FROM 학생 JOIN 학과 USING(학과코드);
+      ```
 - NON-EQUI JOIN
   - JOIN 조건에 '='을 제외한 나머지 비교 연산자(<, >, <>, >=, <=)를 사용하는 JOIN 방법
+
   - SELECT 테이블명1.속성명, 테이블명2.속성명 ... FROM 테이블명1, 테이블명2 ... WHERE (NON-EQUI JOIN 조건)
     - 생략 가능 : SELECT 절 테이블 명
-  - 예제 수기
+
+  - 예제) 학생 테이블과 성적등급 테이블을 JOIN하여 각 학생의 학번, 이름, 성적, 등급을 출력
+
+    - ```sql
+      SELECT 학번, 이름, 성적, 등급
+      FROM 학생, 성적등급
+      WHERE 학생.성적 BETWEEN 성적등급.최저 AND 성적등급.최고;
+      ```
 
 ## 3. OUTER JOIN
 
@@ -724,7 +912,31 @@ INNER JOIN은 일반적으로 EQUI JOIN, NON-EQUI JOIN으로 구분된다.
   - SELECT 테이블명1.속성명, 테이블명2.속성명 ... FROM 테이블명1 FULL OUTER JOIN 테이블명2 ON 테이블명1.속성명 = 테이블명2.속성명
     - 생략 가능 : SELECT 절 테이블 명
 
-예제 수기
+예제 1) 학생 테이블과 학과 테이블에서 학과코드 값이 같은 튜플을 JOIN하여 학번, 이름, 학과코드, 학과명을 출력 (이 때, 학과코드가 입력되지 않은 학생도 출력)
+
+```sql
+SELECT 학번, 이름, 학생.학과코드, 학과명
+FROM 학생 LEFT OUTER JOIN 학과
+ON 학생.학과코드=학과.학과코드;
+
+SELECT 학번, 이름, 학생.학과코드, 학과명
+FROM 학과 RIGHT OUTER JOIN 학생
+ON 학과.학과코드=학생.학과코드;
+
+SELECT 학번, 이름, 학생.학과코드, 학과명
+FROM 학생, 학과
+WHERE 학생.학과코드=학과.학과코드(+);
+```
+
+예제 2) 학생 테이블과 학과 테이블에서 학과코드 값이 같은 튜플을 JOIN하여 학번, 이름, 학과코드, 학과명을 출력 (이 때, 학과코드가 입력되지 않은 학생이나 학과명이 없는 학과코드도 모두 출력)
+
+```sql
+SELECT 학번, 이름, 학생.학과코드, 학과명
+FROM 학생 FULL OUTER JOIN 학과
+ON 학생.학과코드=학과.학과코드;
+```
+
+
 
 ## 4. SELF JOIN
 
@@ -734,7 +946,19 @@ INNER JOIN은 일반적으로 EQUI JOIN, NON-EQUI JOIN으로 구분된다.
 - SELECT 별칭1.속성명, 별칭1.속성명, ... FROM 테이블명1 AS 별칭1, 테이블명1 AS 별칭2 WHERE 별칭1.속성명 = 별칭2.속성명;
   - 생략 가능 : SELECT 절 별칭, FROM 절 [AS]
 
-예제 수기
+예제) 학생 테이블을 SELF JOIN하여 선배가 있는 학생과 선배의 이름을 표시
+
+```sql
+SELECT A.학번, A.이름, B.이름 AS 선배
+FROM 학생 A JOIN 학생 B
+ON A.선배=B.학번;
+
+SELECT A.학번, A.이름, B.이름 AS 선배
+FROM 학생 A, 학생 B
+WHERE A.선배=B.학번;
+```
+
+
 
 # SQL - DML
 
@@ -756,7 +980,26 @@ INNER JOIN은 일반적으로 EQUI JOIN, NON-EQUI JOIN으로 구분된다.
   - 테이블의 모든 속성을 삽입할 때는 속성명을 생략할 수 있다. 단, 이 때에는 CREATE TABLE 문에서 기술된 속성 순으로 속성 값들을 지정해야 한다.
   - SELECT 문을 사용하여 다른 테이블의 검색 결과를 삽입할 수 있다.
 
-예제 수기
+예제 1) 사원 테이블에 이름이 "이순신"이고, 부서가 "기획"인 사원을 삽입
+
+~~~sql
+INSERT INTO 사원(이름, 부서) VALUES('이순신', '기획');
+~~~
+
+예제 2) 사원 테이블에 ('장보고', '기획', '05/03/73', '구의동', 90)을 삽입
+
+```sql
+INSERT INTO 사원 VALUES('장보고', '기획', '05/03/73', '구의동', 90);
+```
+
+예제 3) 사원 테이블에 있는 편집 부서의 모든 튜플을 편집부원(이름, 생일, 주소, 기본급) 테이블에 삽입
+
+```sql
+INSERT INTO 편집부원(이름, 생일, 주소, 기본급)
+SELECT 이름, 생일, 주소, 기본급 FROM 사원 WHERE 부서='편집';
+```
+
+
 
 ## 3. DELETE 문
 
@@ -764,14 +1007,38 @@ INNER JOIN은 일반적으로 EQUI JOIN, NON-EQUI JOIN으로 구분된다.
 - DELETE FROM 테이블명 WHERE 조건;
   - 모든 튜플들을 삭제할 때는 WHERE 절을 생략한다.
 
-예제 수기
+예제 1) 사원 테이블에서 이름이 "임꺽정"인 튜플을 삭제
+
+```sql
+DELETE FROM 사원 WHERE 이름='임꺽정';
+```
+
+예제 2) 사원 테이블의 모든 튜플을 삭제
+
+```sql
+DELETE FROM 사원;
+```
+
+
 
 ## 4. UPDATE 문
 
 - 테이블에 있는 튜플들 중에서 특정 튜플의 내용을 갱신할 때 사용하는 명령문
 - UPDATE 테이블명 SET 속성명=데이터, ... WHERE 조건;
 
-예제 수기
+예제 1) 사원 테이블에서 홍길동의 주소를 "퇴계동"으로 갱신
+
+```sql
+UPDATE 사원 SET 주소='퇴계동' WHERE 이름='홍길동';
+```
+
+예제 2) 사원 테이블에서 황진이의 부서를 "기획"으로 변경하고 기본급을 5 인상
+
+```sql
+UPDATE 사원 SET 부서='기획', 기본급=기본급+5 WHERE 이름='황진이';
+```
+
+
 
 # SQL - DCL
 
@@ -813,7 +1080,31 @@ DBA가 DB 사용자에게 권한을 부여하고 취소하기 위한 명령어
     - GRANT OPTION FOR : 다른 사용자에게 권한을 부여할 수 있는 권한을 취소
     - CASCAED : 권한 취소 시 권한을 부여받았던 사용자가 다른 사용자에게 부여한 권한도 연쇄적으로 취소
 
-예제 수기
+예제 1) 사용자 ID가 "NABI"인 사람에게 DB 및 테이블을 생성할 수 있는 권한을 부여
+
+```sql
+GRANT RESOURCE TO NABI
+```
+
+예제 2) 사용자 ID가 "STAR"인 사람에게 단순히 DB에 있는 정보를 검색할 수 있는 권한을 부여
+
+```sql
+GRANT CONNECT TO STAR;
+```
+
+예제 3) 사용자 ID가 "NABI"인 사람에게 고객 테이블에 대한 모든 권한과 다른 사람에게 권한을 부여할 수 있는 권한까지 부여
+
+```sql
+GRANT ALL ON 고객 TO NABI WITH GRANT OPTION;
+```
+
+예제 4) 사용자 ID가 "STAR"인 사람에게 부여한 고객 테이블에 대한 권한 중 UPDATE 권한을 다른 사람에게 부여할 수 있는 권한만 취소
+
+```sql
+REVOKE GRANT OPTION FOR UPDATE ON 고객 FROM STAR;
+```
+
+
 
 # 뷰 (VIEW)
 
@@ -883,7 +1174,29 @@ DB 내의 데이터를 정의하거나 접근하는 SQL 문을 응용 프로그�
   - 내장 SQL 문에서 사용하는 호스트 변수는 변수 앞에 콜론(:) 문자를 붙인다.
   - 호스트 언어 내에서 호스트 변수는 콜론(:) 없이 그대로 사용한다.
 
-예제 수기
+예제)
+
+```sql
+EXEC SQL BEGIN DECRARE SECTION;
+int SNO;
+char SNAME[20];
+char DEPT[6];
+char SQLSTATE[5];
+EXEC SQL END DECLARE SERCTION; // BEGIN DECLARE SECTION과 END DECLARE SECTION 사이에 변수 선언
+SNO=100; // 호스트 언어 내의 호스트 변수이므로 :를 붙이지 않는다.
+EXEC SQL SELECT SNAME, DEPT
+	INTO :SNAME, :DEPT
+	FROM STUDENT
+	WHERE SNO=:SNO;
+	// STUDENT 테이블에서 SNO가 100인 튜플의 SNAME과 DEPT를 변수 :SNAME과 :DEPT에 저장한다.
+	// 호스트 변수가 내장 SQL문에 사용되면 변수 앞에 콜론(:) 문자를 붙인다.
+	IF (SQLSTATE == "00000")
+		THEN ...;
+		ELSE ...;
+		// SQL이 성공적으로 수행되었는지 확인
+```
+
+
 
 ## 4. 커서 (Cursor)
 
@@ -896,7 +1209,33 @@ DB 내의 데이터를 정의하거나 접근하는 SQL 문을 응용 프로그�
   - FETCH : 질의 결과에 대한 튜플들 중 현재의 다음 튜플로 커서를 이동시키는 명령어
   - CLOSE : 질의 실행 결과에 대한 처리 종료 시 커서를 닫기 위해 사용하는 명령어
 
-예제 수기
+예제)
+
+```sql
+EXEC SQL BEGIN DECLARE SECTION;
+	int department;
+	int salary;
+EXEC SQL END DECLARE SECTION;
+
+EXEC SQL DECLARE person CURSOR FOR
+	SELECT SALARY
+	FROM EMPLOYEE
+	WHERE DEPARTMENT=:department
+	// EMPLOYEE 테이블에서 DEPARTMENT가 :department와 같은 자료만 커서 person으로 선언
+	
+EXEC SQL OPEN person;
+// 선언한 커서 person을 실행하여 커서가 질의 결과의 첫 번째 튜플을 가리키도록 설정
+EXEC SQL FETCH person INTO :salary // 읽은 값을 호스트 변수 :salary에 저장하고 다음 튜플로 이동
+
+while (SQLSTATE == "00000") // SQL 문이 성공적으로 수행되는 동안 {}중괄호 안의 문장을 계속 수행
+	{EXEC SQL UPDATE EMPLOYEE
+		SET SALARY = SALARY * 1.1
+		WHERE CURRENT OF person; // 커서 'person'이 실행도어 가리키는 현재의 튜플만 대상으로 한다.
+	EXEC SQL FETCH person INTO :salary;}
+EXEC SQL CLOSE person; // 커서를 닫는다.
+```
+
+
 
 # Stored Procedure
 
