@@ -3237,7 +3237,7 @@ WLAN은 무선 접속 장치(AP : Access Point)가 설치된 곳을 중심으로
 
 3) 직교 주파수 분할 다중 (OFDM : Orthogonal Frequency Division Mutiplexing)
 
-고속의 데이터를 각 반송파가 직교 관계에 있는 다수의 부반송파에 나누어 실어 다중 전송하는 디지털 변조 방식이다. 보통의 주파수 분할 다중에 비해 훨씬 더 많은 반송파의 다중이 가능하므로 주파수 이용 효율이 높고 멀티패스( Multipath)에 의한 심벌 간 간섭이 강한 특성이 있어 고속 데이터 전송에 적합하다. 802.11 Wireless LAN, DMB, PLC, xDSL, 4G 이동통신, 와이브로 등 많은 분야의 핵심기술로 사용되고 있다.
+고속의 데이터를 각 반송파가 직교 관계에 있는 다수의 부반송파에 나누어 실어 다중 전송하는 디지털 변조 방식이다. 보통의 주파수 분할 다중에 비해 훨씬 더 많은 반송파의 다중이 가능하므로 주파수 이용 효율이 높고 멀티패스( Multipath)에 의한 심벌 간 간섭에 강한 특성이 있어 고속 데이터 전송에 적합하다. 802.11 Wireless LAN, DMB, PLC, xDSL, 4G 이동통신, 와이브로 등 많은 분야의 핵심기술로 사용되고 있다.
 
 4) 파일 전송 프로토콜 (FTP : File Transfer Protocol)
 
@@ -3249,7 +3249,7 @@ FTP는 컴퓨터와 컴퓨터 또는 컴퓨터와 인터넷 사이에서 파일�
 
 6) NDN (Named Data Networking)
 
-인터넷에서 데이터 전송을 콘텐츠 자체의 정보와 라우터 기능만으로 수행하는 기술로, 클라이언트와 서버가 패킷의 헤더에 내장되어 있는 주소 정보를 이용하여 연결되던 기존의 IP(Internet Protocol) 망을 대체할 새로운 인터넷 아키텍처로 떠오르고 있다. 콘텐츠 중심 네트워크 (CCN : Content Centric Networking)와 같은 개념이며, 해시 테이블(Hash Table)에 기반을 두는 P2P(Peer-to-Peer) 시스템과 같이 콘텐츠에 담겨 있는 정보와 라우터기능만으로 목적지를 확장한다.
+인터넷에서 데이터 전송을 콘텐츠 자체의 정보와 라우터 기능만으로 수행하는 기술로, 클라이언트와 서버가 패킷의 헤더에 내장되어 있는 주소 정보를 이용하여 연결되던 기존의 IP(Internet Protocol) 망을 대체할 새로운 인터넷 아키텍처로 떠오르고 있다. 콘텐츠 중심 네트워크 (CCN : Content Centric Networking)와 같은 개념이며, 해시 테이블(Hash Table)에 기반을 두는 P2P(Peer-to-Peer) 시스템과 같이 콘텐츠에 담겨 있는 정보와 라우터 기능만으로 목적지를 확장한다.
 
 7) 원격 검침 (AMR : Automatic Meter Reading, Remote Meter Reading Service)
 
