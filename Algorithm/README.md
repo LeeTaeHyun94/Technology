@@ -205,9 +205,9 @@ Point rotate(Point p, double theta) {
   주로 Θ로 나타내는 각 성분은 0°(직교 좌표계에서 x축의 양의 방향에 해당)에서 반시계 방향으로 잰 각의 크기를 나타낸다.
 * rotate에 대한 일반화 : 각도라는 개념이 없는 직교좌표계에서는 점 P(x, y)를 각 α만큼 회전시킨다고 하면 표현하기 어렵다.  
      하지만 극좌표계에서는 P(r, Θ) -> P'(r, Θ+α) 이처럼 쉽게 표현이 가능하다. 이렇게 표현한 극좌표를    
-     		 삼각함수를 이용해 데카르트 좌표로 변환하면 P'(x', y') = P`(r * cos(Θ+α), r * sin(Θ+α))가 되고  
-     		 삼각함수의 덧셈정리를 이용해 P'(r*cosΘcosα - r*sinΘsinα, r*sinΘcosα + r*cosΘsinα)가 된다.  
-     		 위 식에서 r*cosΘ = P.x, r*sinΘ = P.y이므로 위의 rotate 함수처럼 일반화가 가능하다.
+     ?		 삼각함수를 이용해 데카르트 좌표로 변환하면 P'(x', y') = P`(r * cos(Θ+α), r * sin(Θ+α))가 되고  
+     ?		 삼각함수의 덧셈정리를 이용해 P'(r*cosΘcosα - r*sinΘsinα, r*sinΘcosα + r*cosΘsinα)가 된다.  
+     ?		 위 식에서 r*cosΘ = P.x, r*sinΘ = P.y이므로 위의 rotate 함수처럼 일반화가 가능하다.
 
 
 
@@ -250,7 +250,7 @@ bool areIntersect(Line l1, Line l2, Point &p) { // 참조를 사용한 전달
 ```
 
 * Intersect (교차) : 만약 두 직선이 평행하지 않다면(당연히 일치할 수도 없다.) 어느 한 점에서 교차한다. 따라서 그 교점을 구하려면  
-        미지수가 두 개인 선형 방정식 두 개로 이루어진 연립 방정식을 풀면 된다.
+    ?    미지수가 두 개인 선형 방정식 두 개로 이루어진 연립 방정식을 풀면 된다.
 * 선분은 양 끝점이 존재하며, 길이가 유한한 직선을 말한다.
 * 벡터(Vector)는 선분에 방향이 더해진 것. 벡터의 x, y 성분의 크기를 멤버 변수로 하는 구조체로 표현한다.
 
@@ -392,16 +392,164 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
     double crossProduct(Vec a, Vec b) {
         return a.x * b.y - a.y + b.x;
     }
+    
     int ccw(Point p, Point q, Point r) {
         double cp = crossProduct(pointToVec(p, q), pointToVec(p, r));
         if (cp < EPS) return -1;
-        else if (cp > EPS) return 1;
-        else return 0;
+        if (cp > EPS) return 1;
+        return 0;
+    }
+    // 선분의 끝점이 교차점에 제외되는 경우
+    bool intersectProp(Point a, Point b, Point c, Point d) {
+    	return ccw(a, b, c)*ccw(a, b, d) < 0 && ccw(c, d, a)*ccw(c, d, b) < 0;
+    }
+    
+    // 선분의 끝점이 교차점에 포함되는 경우
+    bool intersect(Point a, Point b, Point c, Point d) {
+    	return ccw(a, b, c)*ccw(a, b, d) <= 0 && ccw(c, d, a)*ccw(c, d, b) <= 0;
     }
     ```
 
+## 8.4 Polygon
 
+- Convex Polygon(볼록 다각형) : 모든 내각이 180도 미만인 다각형
 
+- Concave Polygon(오목 다각형) : 180도가 넘는 내각을 갖는 다각형
+
+- Simple Polygon(단순 다각형) : 다각형의 경계가 스스로 교차하지 않는 다각형
+
+- 성질
+
+  - 볼록 다각형 내부의 임의의 두 점을 연결하는 선분은 볼록 다각형의 테두리를 절대 교차하지 않는다.
+  - 두 볼록 다각형의 교집합은 항상 볼록 다각형이다. (없을수도..?)
+
+- 일반적인 다각형의 구현은 다각형의 꼭지점들을 나타내는 리스트로 표현된다. (P0, P1, ..., Pn-1)
+
+- 볼록 다각형의 면적 구하기
+
+  - 다각형 P를 n개의 꼭지점으로 표현하는데 이를 반시계 방향으로 나열(정렬)한다.
+  - 다각형 내부의 한 점(q)을 잡고 그 점과 인접한 두 정점({P0, P1}, {P1, P2}, ..., {Pn-2, Pn-1}, {Pn-1, P0})들로 이루어진 삼각형들로 분리한 뒤 벡터의 외적을 이용한다.
+
+- 오목 다각형의 면적 구하기
+
+  - 볼록 다각형과 다른 점은 평면 상의 한 점(q)을 잡는다는 점 뿐이다.
+  - 마찬가지로 인접한 두 정점들로 이루어진 삼각형들의 면적을 구하게 되면 좌회전할 때는 양수이고 우회전할 때는 음수가 나오므로 그대로 다 더해주면 다각형에 속하지 않는 면적들은 자연스레 빠지게 된다.
+
+- ```c++
+  double area(Polygon p, int n) {
+      double ret = 0;
+      for(int i=0;i<n - 1;i++) {
+          int j = (i + 1) % n;
+          ret += p[i].x * p[j].y - p[i].y * p[j].x;
+      }
+      return abs(ret) / 2;
+  }
+  ```
+  다각형 포함 문제 : 다각형 P와 점 q가 주어졌을 때, q가 P의 내부에 위치하고 있는지 여부를 검사
+
+  - 잘 분석해보면 점 q에서 뻗어나오는 반직선을 R이라고 할 때, R과 P의 경계선과의 교차점 수에 따라 판별할 수 있다는 것을 알 수 있다.
+  - 홀수이면 q는 P의 내부, 짝수이면 외부
+  - 그러나 예외가 존재, 반직선 R이 꼭지점 혹은 경계선에 접해서 지나는 경우가 있다.
+  - 이를 해결하는 방안은 반직선 R과 교차하는 경계선에 대해서, 경계선의 한 쪽 끝점이 R에 위치하는지를 판단하고 R에 위치해 있다면 경계선의 반대쪽 끝점이 R을 기준으로 반대편에 있는지를 확인해야 한다.
+  - 예외 2 : 점 q가 P의 경계선 위에 존재하는가? 먼저 점 q가 P의 각 경계선 위에 위치하는지 검사하면 해결
+
+  ```c++
+  bool insidePolygon(Point q, Polygon P, int n) {
+      int c = 0;
+      Point ori = {0, 0};
+      // 점 q가 원점에 오도록, 반직선은 양의 x축이 된다.
+      for(int i=0;i<n-1;i++) P[i].x -= q.x, P[i].y -= q.y;
+      for(int i=0;i<n-1;i++) {
+          int j = (i + 1) % n;
+          if (between(P[i], P[j], ori)) return 0;
+          if (P[i].y < 0 && P[j].y >= 0 && ccw(P[i], P[j], ori) == 1 || P[j].y < 0 && P[i].y >= 0 && ccw(P[j], P[i], ori) == 1) c++;
+      }
+  }
+  ```
+
+## 8.5 Convex Hull
+
+- 볼록 외피(Convex Hull) : 주어진 점들을 모두 둘러 싸는 가장 작은 볼록 다각형
+
+- 극단점 (Extreme Point) : 볼록 외피를 구성하는 점을 일컫는다.
+
+- 문제 : 평면 상의 빨간색, 파란색(두 그룹의) 점들이 주어졌을 때, 직선을 그어 평면을 두 영역으로 나눠 각 영역에 같은 색(그룹)의 점만 포함하도록 하는 직선이 존재하는가?
+
+  - 각 그룹의 점들에 대해 그룹 별로 볼록 외피를 구성해본다. 두 볼록 다각형이 겹치거나 닿아 있지 않으면 위 문제에서 설명하는 직선이 존재한다고 할 수 있다.
+
+- 그렇다면 볼록 외피를 어떻게 만들 것인가?
+
+  - 한 극단점을 찾고 그 점에서부터 가장 좌측, 우측에 있는 점들을 찾는 방식이라면 n^2..
+  - 조금 더 빠르게는 nlogn
+
+  1. 점들을 x 좌표에 대해 정렬한다.
+  2. 정렬한 점들을 통해 순차적으로 다각형을 구성한다.
+  3. 구성된 다각형에서 아직 극단점인지 아닌지 알 수 없는 점을 지나는 두 접선을 찾아서 볼록 외피를 늘린다.
+     - 그렇다면 접선을 찾는 방법은?
+       - 접점이 되는 점을 기준으로 가장 인접한 두 점과 각각 짝을 짓는다.
+       - (현재 추가될 점, 접점이 될 가능성이 있는 점, (접점이 될 가능성이 있는 점을 기준으로 가장 인접한 두 점))
+       - 위와 같은 점의 쌍들에 대해 CCW 알고리즘을 이용하여 좌 -> 우 또는 우 -> 좌로 방향이 바뀌는 지점이 접점이라고 할 수 있다.
+       - 왜냐하면, 바로 직전에 추가된 점은 이전까지 봐왔던 점들의 집합으로 구성된 볼록 외피의 하나의 극단점일 수 밖에 없다. 그렇게 시계 방향과 반시계 방향으로 인접합 세 극단점이 나오지 않을 때 까지 확인해주는 과정을 통해 오목 정점을 제거하고 새로운 볼록 외피를 구성할 수 있다. 이는 재귀적인 상태이기 때문에 항상 정확한 볼록 외피를 구성하며 한 번의 시퀀스동안 나머지 n개의 점들을 모두 확인하지 않기 때문에 nlogn의 시간 복잡도를 갖는다.
+
+```c++
+vector<Point> convex_hull(vector<Point> &dat) {
+    if (dat.size() < 4) return dat;
+    vector<Point> upper, lower;
+    sort(dat.begin(), dat.end() [](const Point &a, const Point &b){
+        return a.x == b.x ? a.y < b.y : a.x < b.x;
+    });
+    for (const auto &p : dat) {
+        while (upper.size() > 1 && ccw(*++upper.rbegin(), *upper.rbegin(), p) >= 0) upper.pop_back();
+        while (lower.size() > 1 && ccw(*++lower.rbegin(), *lower.rbegin(), p) >= 0) lower.pop_back();
+        upper.emplace_back(p);
+        lower.emplace_back(p);
+    }
+    upper.insert(upper.end(), ++lower.rbegin(), --lower.rend());
+    return upper;
+}
+```
+
+## 8.6 Closest Pair
+
+- 평면 상에 N개의 점들이 주어졌을 때, 가장 가까운 두 점을 찾아라.
+  - Naive algorithm = N^2
+
+  - Divide & Conquer
+    - N개 점들의 집합 S를 N/2개 씩 각각 집합 S1, S2로 나눈다. (점들의 x좌표의 중간 값(median)을 이용)
+    - 집합 안에서 최근접쌍 문제를 해결
+    - 집합을 합치면서 S1의 한 점과 S2의 한 점을 쌍을 이뤄보면서 서로 다른 집합에서 최근접쌍이 나오는지를 검사한다. 이 때 비교하는 영역에 대해 자명한 사실에 의해 한정 지어주게 되면 빠르게 검사할 수 있다. 추가적으로 이 때, merge sort algorithm에서 해줬던 것처럼 병합까지 해준다면 정렬된 집합을 병합했기 때문에 추가적으로 정렬이 필요하지 않게 되므로 Nlog^2N에서 NlogN으로 줄일 수 있다.
+      - ![Closest Pair 1](./img/ClosestPair1.PNG)
+      - ![Closest Pair 2](./img/ClosestPair2.PNG)
+      - ![Closest Pair 3](./img/ClosestPair3.PNG)
+      - ![Closest Pair 4](./img/ClosestPair4.PNG)
+      - ![Closest Pair 5](./img/ClosestPair5.PNG)
+    - 위 세 가지 시퀀스를 재귀적으로 반복하게 된다면? 적어도 점 두 개가 포함되어 있는 최소 크기의 집합까지 내려갔다가 올라오면서 보다 빠르게 nlogn 시간에 최근접쌍을 구할 수 있다.
+
+  - Line Sweeping
+
+    - 라인 스위핑 기법 또한 위에서 기술된 아이디어에서 집합을 반으로 나누는 부분을 제외한 아이디어를 기반으로 작동한다.
+
+    - ```C++
+      int n;
+      set<pair<int, int>> s;
+      pair<int, int> N[100000];
+      
+      int main() {
+      	scanf("%d", &n);
+      	for (int i = 0; i < n; i++) scanf("%d %d", &N[i].x, &N[i].y);
+      	sort(N, N + n);
+      	int ans = 2e9;
+      	for (int i = 0, idx = 0; i < n; i++) {
+      		int d = sqrt(ans);
+      		while (N[i].x - N[idx].x > d) s.erase({ N[idx].y, N[idx++].x });
+      		for (auto j = s.lower_bound({ N[i].y - d, -10000 }); j != s.end() && j->x <= N[i].y + d; j++)
+      			ans = min(ans, (N[i].x - j->y) * (N[i].x - j->y) + (N[i].y - j->x) * (N[i].y - j->x));
+      		s.insert({ N[i].y,N[i].x });
+      	}
+      	printf("%d\n", ans);
+      	return 0;
+      }
+      ```
 
 # 9. Articulation/Cut Vertex, Articulation/Cut Edge (in Undirected Graph)
 
@@ -429,30 +577,20 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 결국 정렬이 완성된다는 방법론.
 
 * Average-case Analysis : pivot 값에 따라 비교 횟수가 많을 수도 적을 수도 있다. 때문에 중앙에서 분할될 가능성이 높은  
-  		  좌측 끝, 중앙, 우측 끝 세 값의 중위법을 이용하여 pivot을 정하고 분할하는 방법을 대부분 채택한다.  
-  		  평균적인 시간 복잡도는 O(nlogn)이다.
-
-
-
-# 11. Closest Pair
-
-2차원 평면 위에 n개의 점이 존재할 때, 가장 거리가 가까운 점 한 쌍을 구하는 문제.
-
-모든 경우를 탐색하게 되면 O(n^2)의 시간복잡도가 나온다. 시간을 더 줄일 수 있는가? 
-
-* 줄일 수 있다.  분할 정복 형태의 풀이가 가능하다.
+  ?		  좌측 끝, 중앙, 우측 끝 세 값의 중위법을 이용하여 pivot을 정하고 분할하는 방법을 대부분 채택한다.  
+  ?		  평균적인 시간 복잡도는 O(nlogn)이다.
 
 
 
 
-# 12. Graph
+# 11. Graph
 
 - 대칭(Symmetric) 관계 - 무방향 그래프, 전이(Transition) 관계 - 방향 그래프
 - 반사(Reflexive) 관계
 - 동치 (Equivalence Relation)
 - 분할 (Decomposition Partition)
 
-## 12.1 깊이 우선 탐색 (DFS : Depth First Search)
+## 11.1 깊이 우선 탐색 (DFS : Depth First Search)
 
 기존의 DFS와는 다르게 visit 배열을 조금 더 세분화하여 color 배열로써 표현하고, 탐색을 시작한 시간과 끝나는 시간을 기록할 수 있다면,
 
@@ -478,7 +616,7 @@ Spanning Tree의 부모는 방문하지 않는다. 방향은 자식 노드 쪽으로. 루트는 자식 노�
 
 
 
-## 12.2 위상 정렬 (Topological Sort)
+## 11.2 위상 정렬 (Topological Sort)
 
 일련의 정점들을 일자로 나열하는 것 (ex : 작업의 순서도, 수강 신청의 선수 과목 구조 등등)
 
@@ -498,7 +636,7 @@ DFS를 진행하며 Finish Time이 늦는 순서대로 출력한다. (먼저 탐색이 끝나는 대로 쌓
 
 
 
-## 12.3 강 연결 요소 (SCC : Strongly Connected Component)
+## 11.3 강 연결 요소 (SCC : Strongly Connected Component)
 
 어느 한 정점에서 다른 모든 정점으로 갈 수 있는 방법이 존재하는 정점들의 집합을 말한다.
 
@@ -527,14 +665,14 @@ DFS를 통해 DFS Spanning Tree를 구성하고 상호 연결되어 있지 않은 Sub Tree들을 찾�
   - 정방향으로 모든 정점에 대해 DFS를 진행하며 탐색이 끝나는 순서대로 스택에 push한 뒤,
   - 스택이 빌 때까지 정점들을 pop하면서 역방향으로 DFS를 진행하여 pop된 정점을 기준으로 한 번의 dfs에 하나의 강 연결 요소를 구할 수 있다.
 
-## 12.4 이중 연결 요소 (Biconnected Component)
+## 11.4 이중 연결 요소 (BiConnected Component)
 
 DFS를 하며 단절점을 찾는 알고리즘에 탐색하는 간선들을 스택에 저장했다가 리턴하여 되돌아 올 때, 단절점까지 pop연산을 하면 하나의 Biconnected Component를 구할 수 있다.
 
 
 
 
-# 13. Master Theorem
+# 12. Master Theorem
 
 재귀적으로 표현한 알고리즘의 동작 시간을 점근적으로 계산하여 간단하게 계산하는 방법
 
@@ -594,7 +732,7 @@ k를 극한까지 보내면 공비 r = 3/4 < 1인 등비수열의 합 공식에 따라
 
 
 
-# 14. 서로소 집합 (Disjoint Set, Union-find)
+# 13. 서로소 집합 (Disjoint Set, Union-find)
 
 공통된 원소가 없는 (상호 배타적인) 부분 집합들로 나눠진 원소들에 대한 정보를 저장하는 자료 구조
 
@@ -624,7 +762,7 @@ parent[] : 각 정점 번호가 속하여 구성되는 트리의 루트 노드 번호를 저장한다.
 
 
 
-# 15. 최소 신장 트리 (MST : Minimum cost Spanning Tree)
+# 14. 최소 신장 트리 (MST : Minimum cost Spanning Tree)
 
 그래프를 구성하는 간선들에 비용이 있는 그래프 G가 존재할 때, 비용의 가중치(합)를 최소로 하여 사이클이 없이 모든 정점들을 연결하는 트리
 
@@ -641,14 +779,14 @@ parent[] : 각 정점 번호가 속하여 구성되는 트리의 루트 노드 번호를 저장한다.
      - 이 때, 그래프의 사이클 생성 여부는 서로소 집합을 저장하는 Union-find에 따라 판별될 수 있다.
      - 현재 선택된 간선으로 이어지는 두 정점의 root(부모 노드)가 같다면 두 정점은 같은 집합에 속해 있기 때문에 (이미 스패닝 트리로 구성되어 있는 정점임을 의미한다.) 간선을 추가하게 되면 사이클이 생긴다.
 
-# 16. Trie
+# 15. Trie
 
 유한한 문자열들의 집합에 대해 문자열을 생성할 수 있는지 없는지를 결정하는 Automata 이론의 DFA (Deterministic Finite Acceptor)를 트리의 형태로 구현한 것. Final State의 구현은 문자열에 속할 수 없는 특정 문자를 Leaf로 사용하여 특정 문자가 속하는 정점에 도달했는지를 확인하면 쉽게 구현 가능하다.
 
 - Compressed Trie : 주어진 트라이에서 Degree가 1인 정점들이 연속으로 주어질 때, 해당하는 상태 변화를 하나의 Edge로 압축해서 표현한 것.
   - 정점을 하나하나 다 표현하게 되면 주어진 문자열들의 집합 중 가장 긴 문자열의 길이보다 더 큰 공간을 필요로 하기 때문에 최대한 효율적으로 가장 긴 문자열의 길이만큼만 공간을 사용하자는 것.
 
-# 17. Suffix Array
+# 16. Suffix Array
 
 * 주어진 문자열로 구성할 수 있는 모든 접미사들을 사전순으로 정렬하여 Compressed Trie로 구성한 것을 Suffix Tree라고 한다.
 * 모든 Suffix에 대해 원래 문자열의 시작 문자의 인덱스로 축약 표현하여 배열로 저장한 것이 Suffix Array.
@@ -663,7 +801,7 @@ parent[] : 각 정점 번호가 속하여 구성되는 트리의 루트 노드 번호를 저장한다.
 
 -  정렬된 상태를 이용한다면 Pattern Matching, Rotate String, Longest Common Substring Problem이 이분 탐색을 통해서 찾고자 하는 패턴, 조건 등의 길이를 M이라고 할 때, O(Mlogn)만에 해결 가능하다.
 
-## 17.1 LCP (Longest Common Prefix)
+## 16.1 LCP (Longest Common Prefix)
 
 길이에 따라 구성한 rank 배열을 비교하면서 올라가면 rank가 같은 것을 찾는 것 만으로도 LCP를 찾을 수 있다.
 
