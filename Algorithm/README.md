@@ -438,7 +438,7 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
 - ```c++
   double area(Polygon p, int n) {
       double ret = 0;
-      for(int i=0;i<n - 1;i++) {
+      for(int i = 0; i < n; i++) {
           int j = (i + 1) % n;
           ret += p[i].x * p[j].y - p[i].y * p[j].x;
       }
@@ -458,8 +458,8 @@ cf) 자연계에는 스칼라(Scalar)와 벡터(Vector) 두 종류의 물리량이 있다.
       int c = 0;
       Point ori = {0, 0};
       // 점 q가 원점에 오도록, 반직선은 양의 x축이 된다.
-      for(int i=0;i<n-1;i++) P[i].x -= q.x, P[i].y -= q.y;
-      for(int i=0;i<n-1;i++) {
+      for(int i = 0; i < n - 1; i++) P[i].x -= q.x, P[i].y -= q.y;
+      for(int i = 0; i < n; i++) {
           int j = (i + 1) % n;
           if (between(P[i], P[j], ori)) return 0;
           if (P[i].y < 0 && P[j].y >= 0 && ccw(P[i], P[j], ori) == 1 || P[j].y < 0 && P[i].y >= 0 && ccw(P[j], P[i], ori) == 1) c++;
@@ -524,6 +524,8 @@ vector<Point> convex_hull(vector<Point> &dat) {
       - ![Closest Pair 4](./img/ClosestPair4.PNG)
       - ![Closest Pair 5](./img/ClosestPair5.PNG)
     - 위 세 가지 시퀀스를 재귀적으로 반복하게 된다면? 적어도 점 두 개가 포함되어 있는 최소 크기의 집합까지 내려갔다가 올라오면서 보다 빠르게 nlogn 시간에 최근접쌍을 구할 수 있다.
+    - 출처 : http://swexpertacademy.com
+
 
   - Line Sweeping
 
@@ -550,6 +552,15 @@ vector<Point> convex_hull(vector<Point> &dat) {
       	return 0;
       }
       ```
+
+## 8.7 가장 먼 두 점 사이의 거리 구하기
+
+1. Convex Hull 알고리즘을 통해 볼록 껍질을 구성한다.
+2. 
+
+## 8.8 Convex Hull Optimization(Trick)
+
+
 
 # 9. Articulation/Cut Vertex, Articulation/Cut Edge (in Undirected Graph)
 
