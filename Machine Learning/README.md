@@ -79,6 +79,7 @@
 ## * Why TensorFlow?
 
 - Data Flow Graph를 통한 풍부한 표현력
+  - ![Data Flow Graph](./img/4.GIF)
 - 코드 수정 없이 CPU/GPU 모드 동작
 - 아이디어 테스트에서 서비스 단계까지 이용 가능
 - 계산 구조와 목표 함수만 정해주면 자동적으로 미분 계산을 처리할 수 있다.
