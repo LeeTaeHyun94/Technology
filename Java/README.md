@@ -79,7 +79,7 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
         - GC를 처리할 때 다수의 스레드를 이용하기 때문에 Serial GC보다 빠르게 처리할 수 있다.
         - 메모리가 충분하고 코어의 개수가 많을 때 유리하다.
         - Throughput GC라고도 한다.
-        - ![Difference in (C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/4.PNG)](./img/4.PNG)
+        - ![Difference in Serial GC & Parallel GC](./img/4.PNG)
       - Parallel Old GC
         - JDK 5 update 6부터 제공한 GC 방식
         - Parallel GC와 Old 영역의 GC 알고리즘만 다르다.
@@ -94,23 +94,23 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
         - 애플리케이션의 응답 속도가 매우 중요할 때 사용하며, Low Latency GC라고도 부른다.
         - 다른 GC 방식보다 메모리와 CPU를 많이 사용한다.
         - Compaction 단계가 기본적으로 제공되지 않기 떄문에 조각난 메모리가 많아 Compaction 작업 시에 stop-the-world 시간이 다른 GC 방식보다 길기 때문에 Compaction 작업에 대한 모니터링이 필요하다.
-        - ![Concurrent Mark & Sweep GC](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/5.PNG)
+        - ![Concurrent Mark & Sweep GC](./img/5.PNG)
       - Garbage First(G1) GC
         - 바둑판의 각 영역에 객체를 할당하고 GC를 실행한다.
         - 해당 영역이 꽉 차면 다른 영역에서 객체를 할당하고 GC를 실행한다.
         - 다른 방식에 적용된 Young, Old 영역의 개념이 없다.
         - 이전의 GC 방식들보다 빠르다.
-        - ![Garbage First GC](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/6.PNG)
+        - ![Garbage First GC](./img/6.PNG)
   - 영역 별 데이터 흐름
-    - ![Garbage Collector Data Flow](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/1.PNG)
-    - ![Garbage Collector Data Flow](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/3.PNG)
+    - ![Garbage Collector Data Flow](./img/1.PNG)
+    - ![Garbage Collector Data Flow](./img/3.PNG)
   - Permanent Generation 영역 : Method Area라고도 한다. 객체나 억류(intern)된 문자열 정보를 저장하는 곳
     - 이 영역에서 GC가 발생해도 Major GC의 횟수에 포함된다.
   - Old 영역의 객체가 Young 영역의 객체를 참조하는 경우
     - Old 영역에는 512 byte의 덩어리(chunk)로 되어 있는 card table이 존재한다.
     - 이 Card table을 통해 Old 영역의 객체가 Young 영역의 객체를 참조할 때마다 정보를 표시한다.
     - Young 영역의 GC를 실행할 때에는 Old 영역에 있는 모든 객체의 참조를 확인하는 것이 아니라 이 Card table만 탐색해서 GC 대상인지 식별한다.
-    - ![Card table](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/2.PNG)
+    - ![Card table](./img/2.PNG)
     - Card table은 Write Barrier를 사용하여 관리한다.
       - Write Barrier : Minor GC를 빠르게 할 수 있도록 하는 장치
         - 약간의 오버헤드는 발생하지만 전반적인 GC 시간은 감소
@@ -124,8 +124,8 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
 - Multi-threading : 하나의 프로그램이 동시에 여러 작업을 할 수 있도록 하는 것
 
-  - ![Thread](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/7.PNG)
-  - ![Web Server](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/8.PNG)
+  - ![Thread](./img/7.PNG)
+  - ![Web Server](./img/8.PNG)
 
 - Process는 자신만의 데이터를 갖고 Thread는 동일한 하나의 데이터를 공유한다.
 
@@ -180,7 +180,7 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
 - Thread State
 
-  - ![Thread State](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/9.PNG)
+  - ![Thread State](./img/9.PNG)
   - 생성 상태
     - Thread 클래스를 이용하여 새로운 스레드를 생성
     - start() : 생성된 스레드를 시작
@@ -329,7 +329,7 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
   - 스레드 간의 동작을 일치시키기 위하여 wait(), notify() 메소드를 통해 생산되었다는 사실을 소비자가 알 수 있고, 소비되었다는 사실이 생산자가 알 수 있도록 한다.
 
-  - ![Producer/Consumer Example](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/10.PNG)
+  - ![Producer/Consumer Example](./img/10.PNG)
 
   - ```java
     class Producer extends Thread {
@@ -418,14 +418,14 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
 - Port :  가상의 통신 선로
 
-- ![Port Number Example](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/11.PNG)
+- ![Port Number Example](./img/11.PNG)
 
 - Host Name, DNS, URL
 
   - DNS (Domain Name System) : 숫자 대신 기호를 사용하는 주소
   - DNS 서버 : 기호 주소를 숫자 주소로 변환해주는 서버
   - URL (Uniform Resource Locator) : 인터넷 상의 자원을 나타내는 약속
-  - ![Internet DNS Server Example](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/12.PNG)
+  - ![Internet DNS Server Example](./img/12.PNG)
 
 - Protocol
 
@@ -433,11 +433,11 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
   - 프로토콜을 통해 무엇을 어떻게 언제 통신할 것인가를 규정
 
-  - ![Protocol](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/13.PNG)
+  - ![Protocol](./img/13.PNG)
 
   - TCP (Transmission Control Protocol) : 신뢰성있게 통신하기 위하여 먼저 서로 간의 연결을 설정한 후에 데이터를 보내고 받는 방식
 
-    - ![TCP (C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/14.PNG)](./img/14.PNG)
+    - ![TCP](./img/14.PNG)
 
     - 연결지향형 소켓의 데이터 전송 특성
 
@@ -448,7 +448,7 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
     - Socket : TCP를 사용하여 응용 프로그램끼리 통신을 하기 위한 End Point
 
-      - ![Socket](C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/16.PNG)
+      - ![Socket](./img/16.PNG)
       - ServerSocket : 서버를 위한 소켓
       - Socket : 클라이언트를 위한 소켓
 
@@ -503,7 +503,7 @@ stop-the-world 이후에 Garbage Collection 작업을 완료한다. 때문에 Ja
 
   - UDP (User Datagram Protocol) : 데이터를 일정 개수, 고정 길이를 가진 패킷으로 분할하여 전송한다.
 
-    ![UDP (C:/Users/Hyun/Desktop/Workspace/Git/Technology/Java/img/15.PNG)](./img/15.PNG)
+    ![UDP](./img/15.PNG)
 
     - 비연결지향형 소켓의 데이터 전송 특성
 
