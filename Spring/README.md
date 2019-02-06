@@ -44,7 +44,7 @@ Business Logic은 아니지만 반드시 해야하는 공통된 작업을 Aspect
 
 
 
-## 4. Ajax를 통한 댓글 처리
+### 3.4 Ajax를 통한 댓글 처리
 
 * Representational State Transfer : 하나의 URI는 하나의 고유한 Resource를 대표하도록 설계된다는 개념  
 최근에는 서버에 접근하는 기기의 종류가 다양해서 다양한 기기에서 공통으로 데이터를 처리할 수 있는 규칙을 만드는 방식.
@@ -61,9 +61,9 @@ REST 방식이 데이터를 호출하고 사용하는 방식을 의미한다면 
 
 
 
-## 5. Transaction
+## 4. Transaction
 
-하나의 업무에 여러 개의 작은 없무들이 같이 묶여 있는 것.
+하나의 업무에 여러 개의 작은 업무들이 같이 묶여 있는 것.
 
 (ex. (게시글 추가, 포인트 적립), (댓글 추가, 댓글 숫자 업데이트))
 
@@ -72,14 +72,14 @@ REST 방식이 데이터를 호출하고 사용하는 방식을 의미한다면 
 
 
 
-### 5.1 @Transactional
+### 4.1 @Transactional
 
 * Method > Class > Interface 순으로 트랜잭션 어노테이션 설정이 우선시 된다.
 
 
 
 
-# 6. root-context & servlet-context
+## 5. root-context & servlet-context
 
 1. root-context (Root Application Context) : 전체 계층 구조에서 최상단에 위치한 context
    - 서로 다른 servlet context에서 공유해야 하는 Bean들을 정의. (ex. DataBase, Logging Setting etc..)
