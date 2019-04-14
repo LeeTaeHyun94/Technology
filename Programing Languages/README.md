@@ -264,7 +264,7 @@
     - 인터프리터(Interpreter) : 해석하는 프로그램
       - 고급 언어를 자신의 기계어로 취급하는 컴퓨터를 시뮬레이션한 것
       - Scheme Interpreter
-        - ![Scheme Interpreter](./img/7.PNg)
+        - ![Scheme Interpreter](./img/7.PNG)
     - 원시 프로그램 + 입력 -> 인터프리터 -> 결과
 - 하이브리드 기법
   - 컴파일 기법과 해석 기법을 혼합한 형태
